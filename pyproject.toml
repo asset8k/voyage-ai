@@ -7,7 +7,16 @@ authors = [
     { name = "Asset", email = "asset8k@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "asyncpg>=0.31.0",
+    "fastapi>=0.141.1",
+    "openai>=3.6.0",
+    "pwdlib>=0.3.1",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "pyjwt>=2.13.0",
+    "sqlalchemy>=2.0.52",
+]
 
 [project.scripts]
 voyage-ai = "voyage_ai:main"
@@ -15,3 +24,9 @@ voyage-ai = "voyage_ai:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
