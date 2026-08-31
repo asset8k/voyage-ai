@@ -1,4 +1,7 @@
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+jwt_secret_key: SecretStr
 
 
 class Settings(BaseSettings):
@@ -8,7 +11,7 @@ class Settings(BaseSettings):
     )
 
     database_url: str
-    jwt_secret_key: str
+    jwt_secret_key: SecretStr
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
