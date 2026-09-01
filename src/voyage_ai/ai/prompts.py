@@ -1,0 +1,1 @@
+TRIP_PLANNER_INSTRUCTIONS = "Act as a travel expert and generate the trip plan for the desired location within a budget. Include the trip plan for exactly 5 days, assigning locations and time to each other"
