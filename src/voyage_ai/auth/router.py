@@ -9,11 +9,11 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from voyage_ai.auth.schemas import LoginRequest, RegisterRequest, TokenResponse
-from voyage_ai.auth.service import login_user, register_user, get_current_user
-from voyage_ai.database import get_db
-from voyage_ai.users.schemas import UserPrivate
-from voyage_ai.users.model import User
 from voyage_ai.auth.security import oauth2_scheme
+from voyage_ai.auth.service import get_current_user, login_user, register_user
+from voyage_ai.database import get_db
+from voyage_ai.users.model import User
+from voyage_ai.users.schemas import UserPrivate
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

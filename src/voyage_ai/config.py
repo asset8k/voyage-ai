@@ -1,8 +1,6 @@
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-jwt_secret_key: SecretStr
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
