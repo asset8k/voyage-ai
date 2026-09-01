@@ -7,6 +7,7 @@ from voyage_ai.auth.schemas import LoginRequest, RegisterRequest, TokenResponse
 from voyage_ai.auth.security import (
     create_access_token,
     hash_password,
+    verify_access_token,
     verify_password,
 )
 from voyage_ai.config import settings
@@ -46,3 +47,22 @@ async def login_user(db: AsyncSession, data: LoginRequest) -> TokenResponse | No
         expires_delta=access_token_expires,
     )
     return TokenResponse(access_token=access_token, token_type="bearer")
+
+
+async def get_current_user(db: AsyncSession, token: str) -> User | None:
+    user_id = verify_access_token(token)
+    if user_id is None:
+        return None
+
+    try:
+        user_id_int = int(user_id)
+    except (TypeError, ValueError):
+        return None
+
+    result = await db.execute(
+        select(User).where(User.id == user_id_int),
+    )
+    user = result.scalars().first()
+    if not user:
+        return None
+    return user
