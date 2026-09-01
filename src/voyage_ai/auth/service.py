@@ -1,9 +1,5 @@
 from datetime import timedelta
 
-from fastapi import (
-    HTTPException,
-    status,
-)
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,16 +13,12 @@ from voyage_ai.config import settings
 from voyage_ai.users.model import User
 
 
-async def register_user(db: AsyncSession, data: RegisterRequest) -> User:
+async def register_user(db: AsyncSession, data: RegisterRequest) -> User | None:
     result = await db.execute(
         select(User).where(User.username == data.username),
     )
-    existing_user = result.scalars().first()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already exists",
-        )
+    if result.scalars().first():
+        return None
 
     new_user = User(
         username=data.username,
@@ -38,18 +30,14 @@ async def register_user(db: AsyncSession, data: RegisterRequest) -> User:
     return new_user
 
 
-async def authenticate_user(db: AsyncSession, data: LoginRequest) -> TokenResponse:
+async def login_user(db: AsyncSession, data: LoginRequest) -> TokenResponse | None:
     result = await db.execute(
         select(User).where(User.username == data.username),
     )
     user = result.scalars().first()
 
     if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return None
 
     # Create access token with user id as subject
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
