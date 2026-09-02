@@ -1,0 +1,411 @@
+{
+  "destination": "Rome",
+  "trip_summary": "A five-day, balanced-paced solo trip focused on Rome’s major ancient, imperial, religious, and archaeological landmarks. The plan groups nearby historical sites together and allows time for meals, walking, and rest.",
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-10-01",
+      "title": "Historic center and ancient Rome orientation",
+      "weather_note": "October is usually mild, but bring a light rain layer and comfortable walking shoes.",
+      "activities": [
+        {
+          "start_time": "09:00",
+          "end_time": "10:00",
+          "name": "Breakfast and walk through Campo de' Fiori",
+          "description": "Begin in Rome’s historic center, then walk toward the Pantheon through atmospheric medieval and Renaissance streets.",
+          "location": "Campo de' Fiori, Rome",
+          "category": "Food and sightseeing",
+          "estimated_cost": 12.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "10:15",
+          "end_time": "11:15",
+          "name": "Pantheon",
+          "description": "Visit one of the best-preserved ancient Roman buildings, known for its monumental dome and later Christian history. Entry arrangements and pricing should be checked close to travel.",
+          "location": "Pantheon, Piazza della Rotonda",
+          "category": "Historical site",
+          "estimated_cost": 8.0,
+          "travel_time_to_next": "10 minutes on foot"
+        },
+        {
+          "start_time": "11:25",
+          "end_time": "12:15",
+          "name": "Piazza Navona and Domitian’s Stadium area",
+          "description": "Explore the Baroque square and learn about the ancient stadium beneath it; consider the underground archaeological visit if available.",
+          "location": "Piazza Navona",
+          "category": "Historical site",
+          "estimated_cost": 8.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "12:30",
+          "end_time": "13:45",
+          "name": "Lunch in the historic center",
+          "description": "Choose a casual trattoria, pizza al taglio, or market-style lunch.",
+          "location": "Historic center",
+          "category": "Food",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "20 minutes on foot"
+        },
+        {
+          "start_time": "14:15",
+          "end_time": "15:30",
+          "name": "Largo di Torre Argentina",
+          "description": "See the archaeological remains of Republican-era temples and the site traditionally associated with Julius Caesar’s assassination.",
+          "location": "Largo di Torre Argentina",
+          "category": "Archaeology",
+          "estimated_cost": 6.0,
+          "travel_time_to_next": "20 minutes on foot"
+        },
+        {
+          "start_time": "15:50",
+          "end_time": "17:30",
+          "name": "Capitoline Hill and views toward the Roman Forum",
+          "description": "Walk up Michelangelo’s monumental staircase and take in one of the best above-ground views of the ancient Forum.",
+          "location": "Campidoglio, Rome",
+          "category": "Historical site",
+          "estimated_cost": 0.0,
+          "travel_time_to_next": "15 minutes to dinner"
+        },
+        {
+          "start_time": "18:00",
+          "end_time": "19:30",
+          "name": "Dinner",
+          "description": "Casual Roman dinner near Monti or the historic center.",
+          "location": "Monti or historic center",
+          "category": "Food",
+          "estimated_cost": 30.0,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 119.0
+    },
+    {
+      "day": 2,
+      "date": "2026-10-02",
+      "title": "Colosseum, Forum, and Palatine Hill",
+      "weather_note": "Expect several hours outdoors with limited shade; sun protection and water are useful.",
+      "activities": [
+        {
+          "start_time": "08:30",
+          "end_time": "09:00",
+          "name": "Breakfast",
+          "description": "Have breakfast near the accommodation before an early archaeological-site entry.",
+          "location": "Near accommodation",
+          "category": "Food",
+          "estimated_cost": 10.0,
+          "travel_time_to_next": "20-30 minutes by metro or on foot"
+        },
+        {
+          "start_time": "09:30",
+          "end_time": "12:00",
+          "name": "Colosseum",
+          "description": "Visit Rome’s iconic amphitheater. A timed reservation is commonly required or strongly recommended; verify the official booking process before the trip.",
+          "location": "Colosseum, Piazza del Colosseo",
+          "category": "Ancient Roman history",
+          "estimated_cost": 35.0,
+          "travel_time_to_next": "5 minutes on foot"
+        },
+        {
+          "start_time": "12:00",
+          "end_time": "14:30",
+          "name": "Roman Forum and Palatine Hill",
+          "description": "Explore the political, religious, and civic center of ancient Rome, followed by the hill associated with Rome’s legendary foundation and imperial palaces.",
+          "location": "Roman Forum and Palatine Hill",
+          "category": "Archaeology",
+          "estimated_cost": 0.0,
+          "travel_time_to_next": "10 minutes on foot"
+        },
+        {
+          "start_time": "14:30",
+          "end_time": "15:30",
+          "name": "Lunch in Monti",
+          "description": "Take a relaxed lunch break in the nearby Monti neighborhood.",
+          "location": "Monti",
+          "category": "Food",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "15:45",
+          "end_time": "17:00",
+          "name": "Trajan’s Column and Imperial Fora",
+          "description": "Walk along the archaeological remains of the Imperial Fora and view Trajan’s Column, one of Rome’s most important surviving historical monuments.",
+          "location": "Via dei Fori Imperiali",
+          "category": "Ancient Roman history",
+          "estimated_cost": 8.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "18:30",
+          "end_time": "20:00",
+          "name": "Dinner and rest",
+          "description": "Return to the accommodation for a break, then have a low-key dinner.",
+          "location": "Near accommodation",
+          "category": "Food",
+          "estimated_cost": 30.0,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 138.0
+    },
+    {
+      "day": 3,
+      "date": "2026-10-03",
+      "title": "Vatican history and Castel Sant’Angelo",
+      "weather_note": "The Vatican Museums can be crowded even outside peak summer; indoor and outdoor conditions will vary.",
+      "activities": [
+        {
+          "start_time": "08:00",
+          "end_time": "08:30",
+          "name": "Breakfast",
+          "description": "Eat before heading to Vatican City for a timed museum visit.",
+          "location": "Near accommodation",
+          "category": "Food",
+          "estimated_cost": 10.0,
+          "travel_time_to_next": "20-30 minutes by metro or bus"
+        },
+        {
+          "start_time": "09:00",
+          "end_time": "12:30",
+          "name": "Vatican Museums and Sistine Chapel",
+          "description": "Focus on the ancient sculpture collections, Raphael Rooms, and Sistine Chapel. Reserve through the official Vatican Museums channel if tickets are available; dress modestly for religious areas.",
+          "location": "Vatican Museums, Vatican City",
+          "category": "Historical and art museum",
+          "estimated_cost": 45.0,
+          "travel_time_to_next": "10 minutes on foot"
+        },
+        {
+          "start_time": "12:30",
+          "end_time": "13:30",
+          "name": "Lunch near the Vatican",
+          "description": "Choose a casual lunch away from the most heavily touristed streets where possible.",
+          "location": "Prati or Vatican area",
+          "category": "Food",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "10 minutes on foot"
+        },
+        {
+          "start_time": "13:45",
+          "end_time": "15:15",
+          "name": "St. Peter’s Basilica and square",
+          "description": "Visit the basilica’s historically significant interior and explore St. Peter’s Square. Entry procedures and any dome access should be checked before visiting.",
+          "location": "St. Peter’s Basilica, Vatican City",
+          "category": "Religious and historical site",
+          "estimated_cost": 10.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "15:30",
+          "end_time": "17:00",
+          "name": "Castel Sant’Angelo",
+          "description": "Explore the ancient mausoleum of Hadrian, later transformed into a papal fortress and prison.",
+          "location": "Castel Sant’Angelo",
+          "category": "Historical site",
+          "estimated_cost": 20.0,
+          "travel_time_to_next": "20 minutes by bus or on foot"
+        },
+        {
+          "start_time": "18:30",
+          "end_time": "20:00",
+          "name": "Dinner in Prati or central Rome",
+          "description": "Relaxed dinner after a museum-heavy day.",
+          "location": "Prati or central Rome",
+          "category": "Food",
+          "estimated_cost": 30.0,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 155.0
+    },
+    {
+      "day": 4,
+      "date": "2026-10-04",
+      "title": "Appian Way and monumental ancient baths",
+      "weather_note": "The Appian Way can involve uneven surfaces and exposed walking; check conditions if rain is forecast.",
+      "activities": [
+        {
+          "start_time": "08:30",
+          "end_time": "09:00",
+          "name": "Breakfast",
+          "description": "Have breakfast before traveling south toward the Appian Way.",
+          "location": "Near accommodation",
+          "category": "Food",
+          "estimated_cost": 10.0,
+          "travel_time_to_next": "30-45 minutes by bus or taxi"
+        },
+        {
+          "start_time": "09:45",
+          "end_time": "12:00",
+          "name": "Appian Way Regional Park",
+          "description": "Walk a manageable section of the ancient Via Appia, one of Rome’s oldest roads, with Roman ruins, tombs, and rural scenery.",
+          "location": "Via Appia Antica",
+          "category": "Archaeology and walking",
+          "estimated_cost": 8.0,
+          "travel_time_to_next": "10-20 minutes by bus or taxi"
+        },
+        {
+          "start_time": "12:15",
+          "end_time": "13:30",
+          "name": "Catacombs or nearby archaeological site",
+          "description": "Choose one catacomb or archaeological complex open that day. Guided-entry schedules vary, so confirm availability in advance.",
+          "location": "Appian Way area",
+          "category": "Historical site",
+          "estimated_cost": 18.0,
+          "travel_time_to_next": "20-30 minutes by bus or taxi"
+        },
+        {
+          "start_time": "13:45",
+          "end_time": "14:45",
+          "name": "Lunch",
+          "description": "Have lunch near the Appian Way or after returning toward the center.",
+          "location": "Appian Way area or Baths of Caracalla area",
+          "category": "Food",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "10 minutes by bus or taxi"
+        },
+        {
+          "start_time": "15:00",
+          "end_time": "16:30",
+          "name": "Baths of Caracalla",
+          "description": "Explore the immense ruins of one of the Roman Empire’s largest public bath complexes.",
+          "location": "Terme di Caracalla",
+          "category": "Ancient Roman history",
+          "estimated_cost": 15.0,
+          "travel_time_to_next": "20 minutes on foot"
+        },
+        {
+          "start_time": "16:50",
+          "end_time": "17:45",
+          "name": "Circus Maximus viewpoint",
+          "description": "Walk past the remains of the ancient chariot-racing stadium and view the Aventine side of the archaeological landscape.",
+          "location": "Circus Maximus",
+          "category": "Ancient Roman history",
+          "estimated_cost": 0.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "18:30",
+          "end_time": "20:00",
+          "name": "Dinner",
+          "description": "Choose a casual meal in Testaccio or near the accommodation.",
+          "location": "Testaccio or central Rome",
+          "category": "Food",
+          "estimated_cost": 30.0,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 126.0
+    },
+    {
+      "day": 5,
+      "date": "2026-10-05",
+      "title": "Capitoline collections and final imperial landmarks",
+      "weather_note": "Keep the final day flexible in case reservations or weather require adjustments.",
+      "activities": [
+        {
+          "start_time": "08:30",
+          "end_time": "09:00",
+          "name": "Breakfast and checkout",
+          "description": "Check out and store luggage if needed; confirm luggage-storage arrangements with the accommodation.",
+          "location": "Accommodation",
+          "category": "Logistics",
+          "estimated_cost": 10.0,
+          "travel_time_to_next": "15-20 minutes on foot"
+        },
+        {
+          "start_time": "09:30",
+          "end_time": "11:30",
+          "name": "Capitoline Museums",
+          "description": "See ancient Roman sculpture, inscriptions, historical artifacts, and the museum’s views over the Forum. Confirm Monday opening arrangements and ticket details before travel.",
+          "location": "Capitoline Museums, Piazza del Campidoglio",
+          "category": "Historical museum",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "10 minutes on foot"
+        },
+        {
+          "start_time": "11:45",
+          "end_time": "12:45",
+          "name": "Santa Maria in Cosmedin and Bocca della Verità",
+          "description": "Visit the historic church and the famous ancient Roman mask, while also seeing the nearby remains of the ancient Forum Boarium.",
+          "location": "Piazza della Bocca della Verità",
+          "category": "Historical and religious site",
+          "estimated_cost": 3.0,
+          "travel_time_to_next": "15 minutes on foot"
+        },
+        {
+          "start_time": "13:00",
+          "end_time": "14:00",
+          "name": "Final Roman lunch",
+          "description": "Have a leisurely final lunch and try a classic Roman dish such as carbonara, amatriciana, or cacio e pepe.",
+          "location": "Centro Storico or Testaccio",
+          "category": "Food",
+          "estimated_cost": 25.0,
+          "travel_time_to_next": "15-20 minutes by public transport or on foot"
+        },
+        {
+          "start_time": "14:30",
+          "end_time": "16:00",
+          "name": "Baths of Diocletian or National Roman Museum",
+          "description": "Finish with a museum focused on Roman antiquities, including monumental bath remains and archaeological collections. Verify Monday opening and admission details.",
+          "location": "National Roman Museum, Rome",
+          "category": "Archaeological museum",
+          "estimated_cost": 18.0,
+          "travel_time_to_next": "15-25 minutes by public transport"
+        },
+        {
+          "start_time": "16:30",
+          "end_time": "17:30",
+          "name": "Trevi Fountain and final historic-center walk",
+          "description": "See the Baroque fountain and walk through nearby historic streets before departure.",
+          "location": "Trevi Fountain and surrounding historic center",
+          "category": "Historical sightseeing",
+          "estimated_cost": 0.0,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 101.0
+    }
+  ],
+  "budget": {
+    "accommodation": 720.0,
+    "food": 350.0,
+    "transport": 80.0,
+    "activities": 245.0,
+    "other": 70.0,
+    "total": 1465.0
+  },
+  "recommendations": [
+    "Book the Colosseum and Vatican Museums through their official channels as soon as the 2026 schedule becomes available.",
+    "Use public transportation for longer journeys and walk between the closely grouped historic-center sites.",
+    "Consider a Roma Pass only after comparing its price with the individual attractions you plan to visit; the value depends on which sites are included and available during your dates.",
+    "Start major archaeological visits early to reduce heat, crowds, and fatigue.",
+    "Keep one payment card and a small amount of cash available; some smaller sites or cafés may have different payment preferences."
+  ],
+  "warnings": [
+    "International flights, airport transfers, and travel insurance are not included because no flight information was provided.",
+    "Admission prices, reservation rules, opening days, and access restrictions can change before October 2026. Verify all details with official attraction websites before booking.",
+    "The Appian Way and catacombs have variable opening schedules and uneven walking surfaces; substitute a central museum if conditions or availability are unsuitable.",
+    "Religious sites may require covered shoulders and knees, and security screening can cause delays.",
+    "The budget is an estimate for one traveller and assumes moderate lodging, casual meals, public transportation, and advance attraction planning."
+  ],
+  "packing_tips": [
+    "Comfortable walking shoes with good grip for cobblestones and archaeological terrain.",
+    "Light layers and a compact rain jacket for variable October weather.",
+    "A refillable water bottle.",
+    "Modest clothing suitable for churches and Vatican City.",
+    "Small day bag that meets attraction security requirements.",
+    "Portable phone charger and offline maps."
+  ],
+  "assumptions": [
+    "The trip includes four nights of accommodation in Rome; the accommodation estimate is approximately $180 per night for a moderate single room.",
+    "The estimated total excludes international or domestic airfare, since departure city was not specified.",
+    "Estimated daily costs include typical meals, local transportation, accommodation allocation, and planned admission fees.",
+    "The traveller is comfortable walking several miles per day and using public transportation.",
+    "The itinerary prioritizes major historical sites rather than attempting every museum and ruin in Rome.",
+    "Prices are planning estimates in USD and may vary with exchange rates, booking timing, venue policies, and availability."
+  ],
+  "estimated_total_cost": 1465.0,
+  "currency": "USD"
+}
