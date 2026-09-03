@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from voyage_ai.auth.router import router as auth_router
 from voyage_ai.database import engine
+from voyage_ai.trips.router import router as trips_router
 
 
 @asynccontextmanager
@@ -16,6 +17,7 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth_router, prefix="/api")
+app.include_router(trips_router, prefix="/api")
 
 
 @app.get("/api/health")

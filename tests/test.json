@@ -1,411 +1,418 @@
 {
-  "destination": "Rome",
-  "trip_summary": "A five-day, balanced-paced solo trip focused on Rome’s major ancient, imperial, religious, and archaeological landmarks. The plan groups nearby historical sites together and allows time for meals, walking, and rest.",
+  "destination": "Lisbon",
+  "trip_summary": "A balanced six-day Lisbon itinerary for two travellers, combining historic neighbourhoods, Belém, Sintra, contemporary Lisbon, and one planned football-match evening. The itinerary assumes five nights in a mid-range or well-reviewed budget accommodation and excludes international flights because no departure city was provided.",
   "days": [
     {
       "day": 1,
-      "date": "2026-10-01",
-      "title": "Historic center and ancient Rome orientation",
-      "weather_note": "October is usually mild, but bring a light rain layer and comfortable walking shoes.",
+      "date": "2026-11-10",
+      "title": "Arrival and Baixa introduction",
+      "weather_note": "November is often mild but changeable, with a reasonable chance of rain; keep a light waterproof layer available.",
       "activities": [
         {
-          "start_time": "09:00",
-          "end_time": "10:00",
-          "name": "Breakfast and walk through Campo de' Fiori",
-          "description": "Begin in Rome’s historic center, then walk toward the Pantheon through atmospheric medieval and Renaissance streets.",
-          "location": "Campo de' Fiori, Rome",
-          "category": "Food and sightseeing",
-          "estimated_cost": 12.0,
-          "travel_time_to_next": "15 minutes on foot"
+          "start_time": "14:00",
+          "end_time": "15:30",
+          "name": "Arrival, check-in and unpacking",
+          "description": "Arrive in Lisbon, transfer to accommodation and settle in. Allow extra time if arriving during afternoon traffic.",
+          "location": "Lisbon accommodation",
+          "category": "Accommodation",
+          "estimated_cost": 110,
+          "travel_time_to_next": "15-25 minutes"
         },
         {
-          "start_time": "10:15",
-          "end_time": "11:15",
-          "name": "Pantheon",
-          "description": "Visit one of the best-preserved ancient Roman buildings, known for its monumental dome and later Christian history. Entry arrangements and pricing should be checked close to travel.",
-          "location": "Pantheon, Piazza della Rotonda",
-          "category": "Historical site",
-          "estimated_cost": 8.0,
+          "start_time": "16:00",
+          "end_time": "17:00",
+          "name": "Praça do Comércio and Ribeira das Naus",
+          "description": "Take an easy first walk along the waterfront and through Lisbon’s monumental central square.",
+          "location": "Praça do Comércio",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
           "travel_time_to_next": "10 minutes on foot"
         },
         {
-          "start_time": "11:25",
-          "end_time": "12:15",
-          "name": "Piazza Navona and Domitian’s Stadium area",
-          "description": "Explore the Baroque square and learn about the ancient stadium beneath it; consider the underground archaeological visit if available.",
-          "location": "Piazza Navona",
-          "category": "Historical site",
-          "estimated_cost": 8.0,
-          "travel_time_to_next": "15 minutes on foot"
+          "start_time": "17:10",
+          "end_time": "18:30",
+          "name": "Baixa and Rossio orientation walk",
+          "description": "Explore Rua Augusta, Rossio Square and nearby streets at a relaxed pace.",
+          "location": "Baixa and Rossio",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
+          "travel_time_to_next": "10-15 minutes on foot"
         },
         {
-          "start_time": "12:30",
-          "end_time": "13:45",
-          "name": "Lunch in the historic center",
-          "description": "Choose a casual trattoria, pizza al taglio, or market-style lunch.",
-          "location": "Historic center",
+          "start_time": "19:00",
+          "end_time": "20:30",
+          "name": "Portuguese dinner",
+          "description": "Have an early dinner in Baixa or Mouraria; try petiscos, grilled fish or a traditional rice dish.",
+          "location": "Baixa or Mouraria",
           "category": "Food",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "20 minutes on foot"
-        },
-        {
-          "start_time": "14:15",
-          "end_time": "15:30",
-          "name": "Largo di Torre Argentina",
-          "description": "See the archaeological remains of Republican-era temples and the site traditionally associated with Julius Caesar’s assassination.",
-          "location": "Largo di Torre Argentina",
-          "category": "Archaeology",
-          "estimated_cost": 6.0,
-          "travel_time_to_next": "20 minutes on foot"
-        },
-        {
-          "start_time": "15:50",
-          "end_time": "17:30",
-          "name": "Capitoline Hill and views toward the Roman Forum",
-          "description": "Walk up Michelangelo’s monumental staircase and take in one of the best above-ground views of the ancient Forum.",
-          "location": "Campidoglio, Rome",
-          "category": "Historical site",
-          "estimated_cost": 0.0,
-          "travel_time_to_next": "15 minutes to dinner"
-        },
-        {
-          "start_time": "18:00",
-          "end_time": "19:30",
-          "name": "Dinner",
-          "description": "Casual Roman dinner near Monti or the historic center.",
-          "location": "Monti or historic center",
-          "category": "Food",
-          "estimated_cost": 30.0,
+          "estimated_cost": 45,
           "travel_time_to_next": null
         }
       ],
-      "estimated_daily_cost": 119.0
+      "estimated_daily_cost": 155
     },
     {
       "day": 2,
-      "date": "2026-10-02",
-      "title": "Colosseum, Forum, and Palatine Hill",
-      "weather_note": "Expect several hours outdoors with limited shade; sun protection and water are useful.",
+      "date": "2026-11-11",
+      "title": "Belém’s monuments and riverside",
+      "weather_note": "The exposed waterfront can feel cooler and windier than central Lisbon.",
       "activities": [
         {
-          "start_time": "08:30",
-          "end_time": "09:00",
-          "name": "Breakfast",
-          "description": "Have breakfast near the accommodation before an early archaeological-site entry.",
-          "location": "Near accommodation",
-          "category": "Food",
-          "estimated_cost": 10.0,
-          "travel_time_to_next": "20-30 minutes by metro or on foot"
+          "start_time": "09:30",
+          "end_time": "10:45",
+          "name": "Jerónimos Monastery",
+          "description": "Visit the church and, if open and tickets are available, the cloisters. Consider arriving early to reduce queueing.",
+          "location": "Praça do Império, Belém",
+          "category": "Culture",
+          "estimated_cost": 24,
+          "travel_time_to_next": "10 minutes on foot"
         },
         {
-          "start_time": "09:30",
-          "end_time": "12:00",
-          "name": "Colosseum",
-          "description": "Visit Rome’s iconic amphitheater. A timed reservation is commonly required or strongly recommended; verify the official booking process before the trip.",
-          "location": "Colosseum, Piazza del Colosseo",
-          "category": "Ancient Roman history",
-          "estimated_cost": 35.0,
-          "travel_time_to_next": "5 minutes on foot"
+          "start_time": "11:00",
+          "end_time": "11:45",
+          "name": "Monument to the Discoveries",
+          "description": "See the monument and riverside promenade; the viewing platform is optional and subject to opening conditions.",
+          "location": "Padrão dos Descobrimentos, Belém",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
+          "travel_time_to_next": "15 minutes on foot"
         },
         {
           "start_time": "12:00",
+          "end_time": "13:00",
+          "name": "Belém Tower exterior and waterfront",
+          "description": "Walk toward the tower and enjoy views across the Tagus. Access inside may be restricted depending on conservation work or conditions.",
+          "location": "Torre de Belém",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
+          "travel_time_to_next": "10-15 minutes on foot"
+        },
+        {
+          "start_time": "13:15",
           "end_time": "14:30",
-          "name": "Roman Forum and Palatine Hill",
-          "description": "Explore the political, religious, and civic center of ancient Rome, followed by the hill associated with Rome’s legendary foundation and imperial palaces.",
-          "location": "Roman Forum and Palatine Hill",
-          "category": "Archaeology",
-          "estimated_cost": 0.0,
-          "travel_time_to_next": "10 minutes on foot"
-        },
-        {
-          "start_time": "14:30",
-          "end_time": "15:30",
-          "name": "Lunch in Monti",
-          "description": "Take a relaxed lunch break in the nearby Monti neighborhood.",
-          "location": "Monti",
+          "name": "Lunch and pastel de nata stop",
+          "description": "Lunch in Belém, with time for the neighbourhood’s famous custard tart tradition.",
+          "location": "Belém",
           "category": "Food",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "15 minutes on foot"
+          "estimated_cost": 40,
+          "travel_time_to_next": "25-35 minutes by tram or bus"
         },
         {
-          "start_time": "15:45",
+          "start_time": "15:15",
           "end_time": "17:00",
-          "name": "Trajan’s Column and Imperial Fora",
-          "description": "Walk along the archaeological remains of the Imperial Fora and view Trajan’s Column, one of Rome’s most important surviving historical monuments.",
-          "location": "Via dei Fori Imperiali",
-          "category": "Ancient Roman history",
-          "estimated_cost": 8.0,
-          "travel_time_to_next": "15 minutes on foot"
+          "name": "MAAT or riverside alternative",
+          "description": "Visit MAAT if its current exhibition programme appeals to you; otherwise continue along the riverside toward Alcântara.",
+          "location": "MAAT, Avenida Brasília",
+          "category": "Culture",
+          "estimated_cost": 24,
+          "travel_time_to_next": "20-30 minutes by public transport"
         },
         {
-          "start_time": "18:30",
-          "end_time": "20:00",
-          "name": "Dinner and rest",
-          "description": "Return to the accommodation for a break, then have a low-key dinner.",
-          "location": "Near accommodation",
+          "start_time": "19:00",
+          "end_time": "20:30",
+          "name": "Dinner near Cais do Sodré",
+          "description": "Choose a casual restaurant or food hall and return to the accommodation by metro, tram or taxi.",
+          "location": "Cais do Sodré",
           "category": "Food",
-          "estimated_cost": 30.0,
+          "estimated_cost": 45,
           "travel_time_to_next": null
         }
       ],
-      "estimated_daily_cost": 138.0
+      "estimated_daily_cost": 200
     },
     {
       "day": 3,
-      "date": "2026-10-03",
-      "title": "Vatican history and Castel Sant’Angelo",
-      "weather_note": "The Vatican Museums can be crowded even outside peak summer; indoor and outdoor conditions will vary.",
+      "date": "2026-11-12",
+      "title": "Sintra day trip",
+      "weather_note": "Sintra is usually cooler and wetter than Lisbon; wear comfortable shoes and bring rain protection.",
       "activities": [
         {
           "start_time": "08:00",
-          "end_time": "08:30",
-          "name": "Breakfast",
-          "description": "Eat before heading to Vatican City for a timed museum visit.",
-          "location": "Near accommodation",
-          "category": "Food",
-          "estimated_cost": 10.0,
-          "travel_time_to_next": "20-30 minutes by metro or bus"
-        },
-        {
-          "start_time": "09:00",
-          "end_time": "12:30",
-          "name": "Vatican Museums and Sistine Chapel",
-          "description": "Focus on the ancient sculpture collections, Raphael Rooms, and Sistine Chapel. Reserve through the official Vatican Museums channel if tickets are available; dress modestly for religious areas.",
-          "location": "Vatican Museums, Vatican City",
-          "category": "Historical and art museum",
-          "estimated_cost": 45.0,
-          "travel_time_to_next": "10 minutes on foot"
-        },
-        {
-          "start_time": "12:30",
-          "end_time": "13:30",
-          "name": "Lunch near the Vatican",
-          "description": "Choose a casual lunch away from the most heavily touristed streets where possible.",
-          "location": "Prati or Vatican area",
-          "category": "Food",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "10 minutes on foot"
-        },
-        {
-          "start_time": "13:45",
-          "end_time": "15:15",
-          "name": "St. Peter’s Basilica and square",
-          "description": "Visit the basilica’s historically significant interior and explore St. Peter’s Square. Entry procedures and any dome access should be checked before visiting.",
-          "location": "St. Peter’s Basilica, Vatican City",
-          "category": "Religious and historical site",
-          "estimated_cost": 10.0,
-          "travel_time_to_next": "15 minutes on foot"
-        },
-        {
-          "start_time": "15:30",
-          "end_time": "17:00",
-          "name": "Castel Sant’Angelo",
-          "description": "Explore the ancient mausoleum of Hadrian, later transformed into a papal fortress and prison.",
-          "location": "Castel Sant’Angelo",
-          "category": "Historical site",
-          "estimated_cost": 20.0,
-          "travel_time_to_next": "20 minutes by bus or on foot"
-        },
-        {
-          "start_time": "18:30",
-          "end_time": "20:00",
-          "name": "Dinner in Prati or central Rome",
-          "description": "Relaxed dinner after a museum-heavy day.",
-          "location": "Prati or central Rome",
-          "category": "Food",
-          "estimated_cost": 30.0,
-          "travel_time_to_next": null
-        }
-      ],
-      "estimated_daily_cost": 155.0
-    },
-    {
-      "day": 4,
-      "date": "2026-10-04",
-      "title": "Appian Way and monumental ancient baths",
-      "weather_note": "The Appian Way can involve uneven surfaces and exposed walking; check conditions if rain is forecast.",
-      "activities": [
-        {
-          "start_time": "08:30",
           "end_time": "09:00",
-          "name": "Breakfast",
-          "description": "Have breakfast before traveling south toward the Appian Way.",
-          "location": "Near accommodation",
-          "category": "Food",
-          "estimated_cost": 10.0,
-          "travel_time_to_next": "30-45 minutes by bus or taxi"
-        },
-        {
-          "start_time": "09:45",
-          "end_time": "12:00",
-          "name": "Appian Way Regional Park",
-          "description": "Walk a manageable section of the ancient Via Appia, one of Rome’s oldest roads, with Roman ruins, tombs, and rural scenery.",
-          "location": "Via Appia Antica",
-          "category": "Archaeology and walking",
-          "estimated_cost": 8.0,
-          "travel_time_to_next": "10-20 minutes by bus or taxi"
-        },
-        {
-          "start_time": "12:15",
-          "end_time": "13:30",
-          "name": "Catacombs or nearby archaeological site",
-          "description": "Choose one catacomb or archaeological complex open that day. Guided-entry schedules vary, so confirm availability in advance.",
-          "location": "Appian Way area",
-          "category": "Historical site",
-          "estimated_cost": 18.0,
-          "travel_time_to_next": "20-30 minutes by bus or taxi"
-        },
-        {
-          "start_time": "13:45",
-          "end_time": "14:45",
-          "name": "Lunch",
-          "description": "Have lunch near the Appian Way or after returning toward the center.",
-          "location": "Appian Way area or Baths of Caracalla area",
-          "category": "Food",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "10 minutes by bus or taxi"
-        },
-        {
-          "start_time": "15:00",
-          "end_time": "16:30",
-          "name": "Baths of Caracalla",
-          "description": "Explore the immense ruins of one of the Roman Empire’s largest public bath complexes.",
-          "location": "Terme di Caracalla",
-          "category": "Ancient Roman history",
-          "estimated_cost": 15.0,
-          "travel_time_to_next": "20 minutes on foot"
-        },
-        {
-          "start_time": "16:50",
-          "end_time": "17:45",
-          "name": "Circus Maximus viewpoint",
-          "description": "Walk past the remains of the ancient chariot-racing stadium and view the Aventine side of the archaeological landscape.",
-          "location": "Circus Maximus",
-          "category": "Ancient Roman history",
-          "estimated_cost": 0.0,
-          "travel_time_to_next": "15 minutes on foot"
-        },
-        {
-          "start_time": "18:30",
-          "end_time": "20:00",
-          "name": "Dinner",
-          "description": "Choose a casual meal in Testaccio or near the accommodation.",
-          "location": "Testaccio or central Rome",
-          "category": "Food",
-          "estimated_cost": 30.0,
-          "travel_time_to_next": null
-        }
-      ],
-      "estimated_daily_cost": 126.0
-    },
-    {
-      "day": 5,
-      "date": "2026-10-05",
-      "title": "Capitoline collections and final imperial landmarks",
-      "weather_note": "Keep the final day flexible in case reservations or weather require adjustments.",
-      "activities": [
-        {
-          "start_time": "08:30",
-          "end_time": "09:00",
-          "name": "Breakfast and checkout",
-          "description": "Check out and store luggage if needed; confirm luggage-storage arrangements with the accommodation.",
-          "location": "Accommodation",
-          "category": "Logistics",
-          "estimated_cost": 10.0,
-          "travel_time_to_next": "15-20 minutes on foot"
+          "name": "Travel to Sintra",
+          "description": "Take the suburban train from Rossio to Sintra. Leave early to make the most of the day and reduce the risk of long queues.",
+          "location": "Rossio Station to Sintra",
+          "category": "Transport",
+          "estimated_cost": 12,
+          "travel_time_to_next": "15-25 minutes by local bus or taxi"
         },
         {
           "start_time": "09:30",
-          "end_time": "11:30",
-          "name": "Capitoline Museums",
-          "description": "See ancient Roman sculpture, inscriptions, historical artifacts, and the museum’s views over the Forum. Confirm Monday opening arrangements and ticket details before travel.",
-          "location": "Capitoline Museums, Piazza del Campidoglio",
-          "category": "Historical museum",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "10 minutes on foot"
+          "end_time": "12:00",
+          "name": "Pena Palace and park",
+          "description": "Visit Pena Palace if timed tickets are available. If tickets are unavailable, explore the park or substitute Quinta da Regaleira.",
+          "location": "Pena Palace, Sintra",
+          "category": "Culture",
+          "estimated_cost": 40,
+          "travel_time_to_next": "20-30 minutes by bus or taxi"
         },
         {
-          "start_time": "11:45",
-          "end_time": "12:45",
-          "name": "Santa Maria in Cosmedin and Bocca della Verità",
-          "description": "Visit the historic church and the famous ancient Roman mask, while also seeing the nearby remains of the ancient Forum Boarium.",
-          "location": "Piazza della Bocca della Verità",
-          "category": "Historical and religious site",
-          "estimated_cost": 3.0,
+          "start_time": "12:30",
+          "end_time": "14:00",
+          "name": "Sintra village lunch",
+          "description": "Have lunch in the historic centre and try a local queijada or travesseiro pastry.",
+          "location": "Sintra historic centre",
+          "category": "Food",
+          "estimated_cost": 40,
+          "travel_time_to_next": "10-15 minutes on foot"
+        },
+        {
+          "start_time": "14:15",
+          "end_time": "16:00",
+          "name": "Quinta da Regaleira",
+          "description": "Explore the gardens, wells and symbolic architecture. The visit involves uneven paths and stairs.",
+          "location": "Quinta da Regaleira, Sintra",
+          "category": "Culture",
+          "estimated_cost": 32,
+          "travel_time_to_next": "15-25 minutes by bus or taxi"
+        },
+        {
+          "start_time": "16:30",
+          "end_time": "18:00",
+          "name": "Return to Lisbon",
+          "description": "Return by train and allow a short rest at the accommodation.",
+          "location": "Sintra to Lisbon",
+          "category": "Transport",
+          "estimated_cost": 12,
+          "travel_time_to_next": "20-30 minutes"
+        },
+        {
+          "start_time": "19:00",
+          "end_time": "20:30",
+          "name": "Relaxed dinner",
+          "description": "Keep the evening simple after the full day, with dinner near the accommodation.",
+          "location": "Local neighbourhood restaurant",
+          "category": "Food",
+          "estimated_cost": 45,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 225
+    },
+    {
+      "day": 4,
+      "date": "2026-11-13",
+      "title": "Alfama, viewpoints and central Lisbon",
+      "weather_note": "Cobblestones can become slippery in rain; supportive footwear is recommended.",
+      "activities": [
+        {
+          "start_time": "09:30",
+          "end_time": "11:00",
+          "name": "Alfama walking route",
+          "description": "Explore Sé Cathedral, narrow lanes and small squares at a relaxed pace. Avoid rushing the steepest sections.",
+          "location": "Alfama",
+          "category": "Sightseeing",
+          "estimated_cost": 10,
           "travel_time_to_next": "15 minutes on foot"
         },
         {
-          "start_time": "13:00",
+          "start_time": "11:15",
+          "end_time": "12:00",
+          "name": "Miradouro de Santa Luzia and Portas do Sol",
+          "description": "Stop at two classic viewpoints for city and river views.",
+          "location": "Alfama viewpoints",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
+          "travel_time_to_next": "20-30 minutes on foot"
+        },
+        {
+          "start_time": "12:30",
           "end_time": "14:00",
-          "name": "Final Roman lunch",
-          "description": "Have a leisurely final lunch and try a classic Roman dish such as carbonara, amatriciana, or cacio e pepe.",
-          "location": "Centro Storico or Testaccio",
+          "name": "Lunch in Graça",
+          "description": "Walk or take a short ride uphill for lunch around Graça.",
+          "location": "Graça",
           "category": "Food",
-          "estimated_cost": 25.0,
-          "travel_time_to_next": "15-20 minutes by public transport or on foot"
+          "estimated_cost": 40,
+          "travel_time_to_next": "10-15 minutes by tram or taxi"
         },
         {
           "start_time": "14:30",
           "end_time": "16:00",
-          "name": "Baths of Diocletian or National Roman Museum",
-          "description": "Finish with a museum focused on Roman antiquities, including monumental bath remains and archaeological collections. Verify Monday opening and admission details.",
-          "location": "National Roman Museum, Rome",
-          "category": "Archaeological museum",
-          "estimated_cost": 18.0,
-          "travel_time_to_next": "15-25 minutes by public transport"
+          "name": "São Jorge Castle",
+          "description": "Explore the castle grounds and viewpoints if tickets are available; allow for uphill walking.",
+          "location": "Castelo de São Jorge",
+          "category": "Culture",
+          "estimated_cost": 30,
+          "travel_time_to_next": "20 minutes on foot"
         },
         {
           "start_time": "16:30",
-          "end_time": "17:30",
-          "name": "Trevi Fountain and final historic-center walk",
-          "description": "See the Baroque fountain and walk through nearby historic streets before departure.",
-          "location": "Trevi Fountain and surrounding historic center",
-          "category": "Historical sightseeing",
-          "estimated_cost": 0.0,
+          "end_time": "18:00",
+          "name": "Chiado and Carmo",
+          "description": "Browse Chiado and visit the Carmo Convent ruins if desired, then pause for coffee.",
+          "location": "Chiado and Carmo",
+          "category": "Sightseeing",
+          "estimated_cost": 12,
+          "travel_time_to_next": "10-15 minutes on foot"
+        },
+        {
+          "start_time": "19:30",
+          "end_time": "21:00",
+          "name": "Fado evening or Portuguese dinner",
+          "description": "Choose a small fado venue only after checking the current programme and cover charge, or have dinner in Bairro Alto.",
+          "location": "Bairro Alto or Alfama",
+          "category": "Food and entertainment",
+          "estimated_cost": 55,
           "travel_time_to_next": null
         }
       ],
-      "estimated_daily_cost": 101.0
+      "estimated_daily_cost": 195
+    },
+    {
+      "day": 5,
+      "date": "2026-11-14",
+      "title": "Contemporary Lisbon and football match",
+      "weather_note": "Keep the match plan flexible because the exact fixture, kickoff time and ticket availability may not yet be confirmed.",
+      "activities": [
+        {
+          "start_time": "10:00",
+          "end_time": "12:00",
+          "name": "Parque das Nações and Oriente",
+          "description": "Explore the modern riverside district, Gare do Oriente and public waterfront spaces.",
+          "location": "Parque das Nações",
+          "category": "Sightseeing",
+          "estimated_cost": 0,
+          "travel_time_to_next": "10-15 minutes on foot"
+        },
+        {
+          "start_time": "12:15",
+          "end_time": "13:30",
+          "name": "Optional Oceanário de Lisboa",
+          "description": "Visit the aquarium if it is a priority; otherwise extend the riverside walk to keep costs lower.",
+          "location": "Oceanário de Lisboa",
+          "category": "Culture",
+          "estimated_cost": 50,
+          "travel_time_to_next": "20-30 minutes by metro"
+        },
+        {
+          "start_time": "14:00",
+          "end_time": "15:30",
+          "name": "Lunch and rest",
+          "description": "Have lunch near Oriente, then return to the accommodation or rest before the evening match.",
+          "location": "Parque das Nações or accommodation",
+          "category": "Food",
+          "estimated_cost": 40,
+          "travel_time_to_next": "25-40 minutes by metro"
+        },
+        {
+          "start_time": "17:30",
+          "end_time": "18:30",
+          "name": "Travel to stadium and pre-match meal",
+          "description": "Travel to Estádio da Luz or Estádio José Alvalade, depending on the confirmed Lisbon fixture. Arrive early for security and seating.",
+          "location": "Estádio da Luz or Estádio José Alvalade",
+          "category": "Transport",
+          "estimated_cost": 20,
+          "travel_time_to_next": "30-60 minutes including entry time"
+        },
+        {
+          "start_time": "19:30",
+          "end_time": "22:00",
+          "name": "Football match",
+          "description": "Attend one Lisbon football match. The Saturday fixture is a planning placeholder: the 2026-27 schedule, opponent, kickoff time and ticket prices should be verified when released. Purchase through the club or an authorised seller.",
+          "location": "Estádio da Luz or Estádio José Alvalade",
+          "category": "Sport",
+          "estimated_cost": 120,
+          "travel_time_to_next": "30-45 minutes by metro or taxi"
+        },
+        {
+          "start_time": "22:30",
+          "end_time": "23:30",
+          "name": "Post-match snack and return",
+          "description": "Have a light late meal near the accommodation or stadium area and return using official transport or a licensed taxi/rideshare.",
+          "location": "Near the stadium or accommodation",
+          "category": "Food",
+          "estimated_cost": 35,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 265
+    },
+    {
+      "day": 6,
+      "date": "2026-11-15",
+      "title": "Final stroll and departure",
+      "weather_note": "Allow a generous airport buffer, particularly if departing on a Sunday afternoon or evening.",
+      "activities": [
+        {
+          "start_time": "09:00",
+          "end_time": "10:00",
+          "name": "Breakfast and check-out",
+          "description": "Settle the accommodation bill, store luggage if possible and keep valuables with you.",
+          "location": "Lisbon accommodation",
+          "category": "Accommodation",
+          "estimated_cost": 25,
+          "travel_time_to_next": "10-20 minutes"
+        },
+        {
+          "start_time": "10:20",
+          "end_time": "12:00",
+          "name": "Final stroll through Mouraria or Praça do Comércio",
+          "description": "Use the final morning for photographs, souvenirs and any sights missed earlier.",
+          "location": "Mouraria or Baixa",
+          "category": "Sightseeing",
+          "estimated_cost": 15,
+          "travel_time_to_next": "20-40 minutes by metro or taxi"
+        },
+        {
+          "start_time": "12:30",
+          "end_time": "13:30",
+          "name": "Lunch",
+          "description": "Have an early lunch before collecting luggage and travelling to the airport.",
+          "location": "Baixa or near the accommodation",
+          "category": "Food",
+          "estimated_cost": 40,
+          "travel_time_to_next": "30-45 minutes"
+        },
+        {
+          "start_time": "14:15",
+          "end_time": "15:15",
+          "name": "Airport transfer and departure buffer",
+          "description": "Travel to Humberto Delgado Airport. Adjust this time to match the actual flight and allow extra time for baggage and security.",
+          "location": "Lisbon Airport",
+          "category": "Transport",
+          "estimated_cost": 20,
+          "travel_time_to_next": null
+        }
+      ],
+      "estimated_daily_cost": 100
     }
   ],
   "budget": {
-    "accommodation": 720.0,
-    "food": 350.0,
-    "transport": 80.0,
-    "activities": 245.0,
-    "other": 70.0,
-    "total": 1465.0
+    "accommodation": 550,
+    "food": 360,
+    "transport": 100,
+    "activities": 270,
+    "other": 80,
+    "total": 1360
   },
   "recommendations": [
-    "Book the Colosseum and Vatican Museums through their official channels as soon as the 2026 schedule becomes available.",
-    "Use public transportation for longer journeys and walk between the closely grouped historic-center sites.",
-    "Consider a Roma Pass only after comparing its price with the individual attractions you plan to visit; the value depends on which sites are included and available during your dates.",
-    "Start major archaeological visits early to reduce heat, crowds, and fatigue.",
-    "Keep one payment card and a small amount of cash available; some smaller sites or cafés may have different payment preferences."
+    "Stay in Baixa, Chiado, Avenida da Liberdade, or near Alameda for convenient access to sights and public transport.",
+    "Reserve Sintra palace tickets and any desired museum entries in advance once the 2026 booking calendars are available.",
+    "For the football match, check Benfica and Sporting CP home fixtures when the 2026-27 schedule is published, then buy only through official club channels or authorised sellers.",
+    "Use a rechargeable public-transport card or contactless payment where accepted; validate the current fare rules before travelling.",
+    "Book restaurants and any fado venue ahead for Friday or Saturday evening, especially for small venues."
   ],
   "warnings": [
-    "International flights, airport transfers, and travel insurance are not included because no flight information was provided.",
-    "Admission prices, reservation rules, opening days, and access restrictions can change before October 2026. Verify all details with official attraction websites before booking.",
-    "The Appian Way and catacombs have variable opening schedules and uneven walking surfaces; substitute a central museum if conditions or availability are unsuitable.",
-    "Religious sites may require covered shoulders and knees, and security screening can cause delays.",
-    "The budget is an estimate for one traveller and assumes moderate lodging, casual meals, public transportation, and advance attraction planning."
+    "A specific Lisbon football fixture, kickoff time and ticket price for 14 November 2026 cannot be confirmed from the information provided. The match activity should be moved to the actual home-match date if necessary.",
+    "The itinerary assumes a suitable home match is available in Lisbon during the trip. If no match is scheduled or tickets cannot be obtained, use an official stadium tour or another authorised football experience as a fallback, subject to availability.",
+    "Opening days, admission prices, transport fares and access restrictions for attractions may change before November 2026; verify them close to travel.",
+    "The €1,500 budget excludes international flights and assumes economical-to-mid-range accommodation booked at a reasonable rate.",
+    "The Sintra day is weather-sensitive. In heavy rain, reduce the number of outdoor sites and prioritise one palace plus the village."
   ],
   "packing_tips": [
-    "Comfortable walking shoes with good grip for cobblestones and archaeological terrain.",
-    "Light layers and a compact rain jacket for variable October weather.",
-    "A refillable water bottle.",
-    "Modest clothing suitable for churches and Vatican City.",
-    "Small day bag that meets attraction security requirements.",
-    "Portable phone charger and offline maps."
+    "Comfortable shoes with good grip for steep streets, cobblestones and Sintra paths.",
+    "Light waterproof jacket, compact umbrella and a warm layer for November evenings.",
+    "Small day bag for museum visits and the football match; check the stadium’s current bag-size rules before attending.",
+    "Portable phone battery and offline maps for neighbourhood walks.",
+    "Travel documents, payment card and a small amount of cash for incidental purchases."
   ],
   "assumptions": [
-    "The trip includes four nights of accommodation in Rome; the accommodation estimate is approximately $180 per night for a moderate single room.",
-    "The estimated total excludes international or domestic airfare, since departure city was not specified.",
-    "Estimated daily costs include typical meals, local transportation, accommodation allocation, and planned admission fees.",
-    "The traveller is comfortable walking several miles per day and using public transportation.",
-    "The itinerary prioritizes major historical sites rather than attempting every museum and ruin in Rome.",
-    "Prices are planning estimates in USD and may vary with exchange rates, booking timing, venue policies, and availability."
+    "The trip is for two travellers sharing one room for five nights.",
+    "Estimated costs are for both travellers combined and are stated in EUR.",
+    "The accommodation estimate assumes approximately €110 per night; actual rates may vary substantially by booking date and room type.",
+    "Daily costs are approximate and may not exactly equal the category budget breakdown because some expenses are paid in advance or vary by choice.",
+    "No departure airport, arrival time or departure time was provided, so arrival and departure activities use flexible placeholder times.",
+    "The football match budget assumes approximately €60 per person for standard tickets, but actual prices depend on the club, opponent, competition and seating area."
   ],
-  "estimated_total_cost": 1465.0,
-  "currency": "USD"
+  "currency": "EUR"
 }
