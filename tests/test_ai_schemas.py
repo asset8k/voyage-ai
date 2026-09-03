@@ -45,7 +45,6 @@ def test_trip_plan_serializes() -> None:
         warnings=["Keep a small amount of cash available."],
         packing_tips=["Comfortable walking shoes."],
         assumptions=["Costs are estimates for two travellers."],
-        estimated_total_cost=1500,
         currency="USD",
     )
 

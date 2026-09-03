@@ -18,9 +18,8 @@ router = APIRouter(prefix="/trips", tags=["trips"])
 async def generate_trip(
     data: TripGenerationRequest,
 ) -> TripPlan:
-    plan = await generate_trip_plan(data)
     try:
-        return plan
+        return await generate_trip_plan(data)
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
