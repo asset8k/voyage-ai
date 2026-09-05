@@ -11,4 +11,5 @@ class UserPublic(BaseModel):
 
 
 class UserPrivate(UserPublic):
+    # POST /api/auth/me
     created_at: datetime

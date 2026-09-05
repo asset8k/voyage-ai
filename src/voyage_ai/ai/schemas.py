@@ -49,6 +49,7 @@ class BudgetBreakdown(BaseModel):
 
 
 class TripPlan(BaseModel):
+    # POST /api/trips/generate
     destination: str = Field(min_length=1, max_length=120)
     trip_summary: str = Field(min_length=1, max_length=1024)
     days: list[DayPlan] = Field(min_length=1)
