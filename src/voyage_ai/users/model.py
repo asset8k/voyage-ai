@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from voyage_ai.database import Base
+
+if TYPE_CHECKING:
+    from voyage_ai.trips.model import Trip
 
 
 class User(Base):
@@ -17,4 +21,10 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+    )
+
+    trips: Mapped[list[Trip]] = relationship(
+        "Trip",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )

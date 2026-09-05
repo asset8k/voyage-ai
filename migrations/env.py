@@ -6,9 +6,10 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-import voyage_ai.users.model  # noqa: F401 - registers User tables on Base.metadata
 from voyage_ai.config import settings
 from voyage_ai.database import Base
+from voyage_ai.trips.model import Trip  # noqa: F401
+from voyage_ai.users.model import User  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
