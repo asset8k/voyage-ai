@@ -6,17 +6,21 @@ from fastapi import (
     HTTPException,
     status,
 )
-from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from voyage_ai.ai.planner import generate_trip_plan
 from voyage_ai.ai.schemas import TripPlan
-from voyage_ai.auth.security import bearer_scheme
-from voyage_ai.auth.service import get_current_user
+from voyage_ai.auth.dependencies import require_current_user
 from voyage_ai.database import get_db
 from voyage_ai.trips.model import Trip
-from voyage_ai.trips.schemas import TripCreate, TripDetail, TripGenerationRequest
-from voyage_ai.trips.service import save_trip
+from voyage_ai.trips.schemas import (
+    TripCreate,
+    TripDetail,
+    TripGenerationRequest,
+    TripListItem,
+)
+from voyage_ai.trips.service import get_user_trips, save_trip
+from voyage_ai.users.model import User
 
 router = APIRouter(prefix="/trips", tags=["trips"])
 
@@ -44,18 +48,16 @@ async def generate_trip(
 )
 async def create_trip(
     db: Annotated[AsyncSession, Depends(get_db)],
-    credentials: Annotated[
-        HTTPAuthorizationCredentials,
-        Depends(bearer_scheme),
-    ],
+    current_user: Annotated[User, Depends(require_current_user)],
     data: TripCreate,
 ) -> Trip:
-    user = await get_current_user(db, credentials.credentials)
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    return await save_trip(db, current_user.id, data)
 
-    return await save_trip(db, user.id, data)
+
+@router.get("/mine", response_model=list[TripListItem])
+async def get_my_trips(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_current_user)],
+) -> list[Trip]:
+
+    return await get_user_trips(db, current_user.id)

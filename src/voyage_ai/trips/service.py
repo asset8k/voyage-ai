@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from voyage_ai.trips.model import Trip
@@ -27,3 +28,14 @@ async def save_trip(
     await db.commit()
     await db.refresh(new_trip)
     return new_trip
+
+
+async def get_user_trips(
+    db: AsyncSession,
+    user_id: int,
+) -> list[Trip]:
+    result = await db.execute(
+        select(Trip).where(Trip.user_id == user_id).order_by(Trip.created_at.desc()),
+    )
+
+    return list(result.scalars().all())
