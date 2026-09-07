@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from voyage_ai.ai.planner import generate_trip_plan
 from voyage_ai.ai.schemas import TripPlan
-from voyage_ai.auth.dependencies import require_current_user
+from voyage_ai.auth.dependencies import get_optional_current_user, require_current_user
 from voyage_ai.database import get_db
 from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
@@ -19,7 +19,7 @@ from voyage_ai.trips.schemas import (
     TripGenerationRequest,
     TripListItem,
 )
-from voyage_ai.trips.service import get_user_trips, save_trip
+from voyage_ai.trips.service import get_trip_by_id, get_user_trips, save_trip
 from voyage_ai.users.model import User
 
 router = APIRouter(prefix="/trips", tags=["trips"])
@@ -61,3 +61,27 @@ async def get_my_trips(
 ) -> list[Trip]:
 
     return await get_user_trips(db, current_user.id)
+
+
+@router.get("/{trip_id}", response_model=TripDetail)
+async def get_specific_trip(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    trip_id: int,
+    current_user: Annotated[User | None, Depends(get_optional_current_user)],
+) -> Trip:
+
+    trip = await get_trip_by_id(db, trip_id)
+
+    is_owner = (
+        current_user is not None
+        and trip is not None
+        and (trip.user_id == current_user.id)
+    )
+
+    if trip is None or (not trip.is_public and not is_owner):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Trip not found",
+        )
+
+    return trip

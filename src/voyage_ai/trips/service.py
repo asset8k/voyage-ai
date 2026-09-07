@@ -39,3 +39,15 @@ async def get_user_trips(
     )
 
     return list(result.scalars().all())
+
+
+async def get_trip_by_id(
+    db: AsyncSession,
+    trip_id: int,
+) -> Trip | None:
+    result = await db.execute(
+        select(Trip).where(Trip.id == trip_id),
+    )
+    trip = result.scalars().one_or_none()
+
+    return trip

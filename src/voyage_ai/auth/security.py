@@ -9,6 +9,7 @@ from voyage_ai.config import settings
 password_hash = PasswordHash.recommended()
 
 bearer_scheme = HTTPBearer()
+optional_bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
