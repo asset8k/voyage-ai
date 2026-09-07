@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
     TripCreate,
+    TripUpdate,
 )
 
 
@@ -50,4 +51,19 @@ async def get_trip_by_id(
     )
     trip = result.scalars().one_or_none()
 
+    return trip
+
+
+async def update_trip_params(
+    db: AsyncSession,
+    trip: Trip,
+    data: TripUpdate,
+) -> Trip:
+    update_data = data.model_dump(exclude_unset=True, exclude_none=True)
+
+    for field, value in update_data.items():
+        setattr(trip, field, value)
+
+    await db.commit()
+    await db.refresh(trip)
     return trip

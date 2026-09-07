@@ -18,8 +18,14 @@ from voyage_ai.trips.schemas import (
     TripDetail,
     TripGenerationRequest,
     TripListItem,
+    TripUpdate,
 )
-from voyage_ai.trips.service import get_trip_by_id, get_user_trips, save_trip
+from voyage_ai.trips.service import (
+    get_trip_by_id,
+    get_user_trips,
+    save_trip,
+    update_trip_params,
+)
 from voyage_ai.users.model import User
 
 router = APIRouter(prefix="/trips", tags=["trips"])
@@ -64,7 +70,7 @@ async def get_my_trips(
 
 
 @router.get("/{trip_id}", response_model=TripDetail)
-async def get_specific_trip(
+async def get_trip(
     db: Annotated[AsyncSession, Depends(get_db)],
     trip_id: int,
     current_user: Annotated[User | None, Depends(get_optional_current_user)],
@@ -85,3 +91,21 @@ async def get_specific_trip(
         )
 
     return trip
+
+
+@router.patch("/{trip_id}", response_model=TripDetail)
+async def update_trip(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_current_user)],
+    trip_id: int,
+    data: TripUpdate,
+) -> Trip:
+    trip = await get_trip_by_id(db, trip_id)
+
+    if trip is None or trip.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Trip not found",
+        )
+
+    return await update_trip_params(db, trip, data)
