@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
@@ -37,6 +38,19 @@ async def get_user_trips(
 ) -> list[Trip]:
     result = await db.execute(
         select(Trip).where(Trip.user_id == user_id).order_by(Trip.created_at.desc()),
+    )
+
+    return list(result.scalars().all())
+
+
+async def get_public_trips(
+    db: AsyncSession,
+) -> list[Trip]:
+    result = await db.execute(
+        select(Trip)
+        .options(selectinload(Trip.user))
+        .where(Trip.is_public.is_(True))
+        .order_by(Trip.created_at.desc()),
     )
 
     return list(result.scalars().all())

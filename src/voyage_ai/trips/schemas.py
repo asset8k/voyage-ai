@@ -79,7 +79,7 @@ class TripListItem(BaseModel):
 
 
 class TripFeedItem(BaseModel):
-    # Each item inside GET /api/feed/trips
+    # Each item inside GET /api/trips/feed
 
     id: int
     title: str

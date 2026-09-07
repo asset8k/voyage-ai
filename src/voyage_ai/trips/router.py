@@ -16,11 +16,13 @@ from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
     TripCreate,
     TripDetail,
+    TripFeedItem,
     TripGenerationRequest,
     TripListItem,
     TripUpdate,
 )
 from voyage_ai.trips.service import (
+    get_public_trips,
     get_trip_by_id,
     get_user_trips,
     remove_trip,
@@ -28,6 +30,7 @@ from voyage_ai.trips.service import (
     update_trip_params,
 )
 from voyage_ai.users.model import User
+from voyage_ai.users.schemas import UserPublic
 
 router = APIRouter(prefix="/trips", tags=["trips"])
 
@@ -68,6 +71,28 @@ async def get_my_trips(
 ) -> list[Trip]:
 
     return await get_user_trips(db, current_user.id)
+
+
+@router.get("/feed", response_model=list[TripFeedItem])
+async def get_feed_trips(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[TripFeedItem]:
+
+    trips = await get_public_trips(db)
+
+    return [
+        TripFeedItem(
+            id=trip.id,
+            title=trip.title,
+            destination=trip.destination,
+            start_date=trip.start_date,
+            end_date=trip.end_date,
+            trip_summary=trip.trip_plan["trip_summary"],
+            author=UserPublic.model_validate(trip.user),
+            created_at=trip.created_at,
+        )
+        for trip in trips
+    ]
 
 
 @router.get("/{trip_id}", response_model=TripDetail)
