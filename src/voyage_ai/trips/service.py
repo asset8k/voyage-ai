@@ -67,3 +67,12 @@ async def update_trip_params(
     await db.commit()
     await db.refresh(trip)
     return trip
+
+
+async def remove_trip(
+    db: AsyncSession,
+    trip: Trip,
+) -> None:
+
+    await db.delete(trip)
+    await db.commit()

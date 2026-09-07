@@ -23,6 +23,7 @@ from voyage_ai.trips.schemas import (
 from voyage_ai.trips.service import (
     get_trip_by_id,
     get_user_trips,
+    remove_trip,
     save_trip,
     update_trip_params,
 )
@@ -109,3 +110,20 @@ async def update_trip(
         )
 
     return await update_trip_params(db, trip, data)
+
+
+@router.delete("/{trip_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_trip(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_current_user)],
+    trip_id: int,
+) -> None:
+    trip = await get_trip_by_id(db, trip_id)
+
+    if trip is None or trip.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Trip not found",
+        )
+
+    await remove_trip(db, trip)
