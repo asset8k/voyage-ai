@@ -89,3 +89,8 @@ class TripFeedItem(BaseModel):
     trip_summary: str
     author: UserPublic
     created_at: datetime
+
+
+class TripRefinementRequest(BaseModel):
+    # POST /api/trips/{trip_id}/refine
+    instruction: str = Field(min_length=1, max_length=1000)

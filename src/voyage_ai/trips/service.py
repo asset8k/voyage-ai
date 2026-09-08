@@ -2,9 +2,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from voyage_ai.ai.planner import refine_trip_plan
+from voyage_ai.ai.schemas import TripPlan
 from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
     TripCreate,
+    TripGenerationRequest,
+    TripRefinementRequest,
     TripUpdate,
 )
 
@@ -90,3 +94,28 @@ async def remove_trip(
 
     await db.delete(trip)
     await db.commit()
+
+
+async def refine_saved_trip(
+    db: AsyncSession,
+    trip: Trip,
+    data: TripRefinementRequest,
+) -> Trip:
+    current_trip_plan = TripPlan.model_validate(trip.trip_plan)
+
+    original_generation_request = TripGenerationRequest.model_validate(
+        trip.generation_request,
+    )
+
+    refined_plan = await refine_trip_plan(
+        data,
+        current_trip_plan,
+        original_generation_request,
+    )
+
+    trip.trip_plan = refined_plan.model_dump(mode="json")
+
+    await db.commit()
+    await db.refresh(trip)
+
+    return trip

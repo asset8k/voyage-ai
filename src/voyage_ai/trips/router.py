@@ -19,12 +19,14 @@ from voyage_ai.trips.schemas import (
     TripFeedItem,
     TripGenerationRequest,
     TripListItem,
+    TripRefinementRequest,
     TripUpdate,
 )
 from voyage_ai.trips.service import (
     get_public_trips,
     get_trip_by_id,
     get_user_trips,
+    refine_saved_trip,
     remove_trip,
     save_trip,
     update_trip_params,
@@ -152,3 +154,30 @@ async def delete_trip(
         )
 
     await remove_trip(db, trip)
+
+
+@router.post(
+    "/{trip_id}/refine",
+    response_model=TripDetail,
+)
+async def refine_trip(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_current_user)],
+    trip_id: int,
+    data: TripRefinementRequest,
+) -> Trip:
+    trip = await get_trip_by_id(db, trip_id)
+
+    if trip is None or trip.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Trip not found",
+        )
+
+    try:
+        return await refine_saved_trip(db, trip, data)
+    except RuntimeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Unable to refine the trip. Please try again.",
+        ) from exc
