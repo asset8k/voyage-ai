@@ -6,6 +6,30 @@ import pytest
 from voyage_ai.ai.schemas import Activity, BudgetBreakdown, DayPlan, TripPlan
 
 
+def authenticate_user(client, username: str) -> dict[str, str]:
+    """Register a test user and return its bearer-auth header."""
+    credentials = {
+        "username": username,
+        "password": "securepassword123",
+    }
+
+    register_response = client.post("/api/auth/register", json=credentials)
+    assert register_response.status_code == 201
+
+    login_response = client.post("/api/auth/login", json=credentials)
+    assert login_response.status_code == 200
+
+    access_token = login_response.json()["access_token"]
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+def create_saved_trip(client, headers: dict[str, str], payload: dict) -> dict:
+    """Create a trip through the API and return its response body."""
+    response = client.post("/api/trips", json=payload, headers=headers)
+    assert response.status_code == 201
+    return response.json()
+
+
 @pytest.fixture
 def sample_trip_request() -> dict:
     return {
@@ -60,6 +84,25 @@ def sample_trip_plan() -> TripPlan:
         assumptions=[],
         currency="USD",
     )
+
+
+@pytest.fixture
+def owner_headers(client) -> dict[str, str]:
+    return authenticate_user(client, "trip_owner")
+
+
+@pytest.fixture
+def other_user_headers(client) -> dict[str, str]:
+    return authenticate_user(client, "other_user")
+
+
+@pytest.fixture
+def saved_trip_payload(sample_trip_request, sample_trip_plan) -> dict:
+    return {
+        "title": "Tokyo food weekend",
+        "generation_request": sample_trip_request,
+        "trip_plan": sample_trip_plan.model_dump(mode="json"),
+    }
 
 
 def test_generate_trip(
@@ -124,3 +167,120 @@ def test_generate_trip_runtime_error(
         response.json()["detail"] == "Unable to generate a trip plan. Please try again."
     )
     mock_planner.assert_awaited_once()
+
+
+def test_public_trip_appears_in_feed(client, owner_headers, saved_trip_payload):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    publish_response = client.patch(
+        f"/api/trips/{trip['id']}",
+        json={"is_public": True},
+        headers=owner_headers,
+    )
+    assert publish_response.status_code == 200
+
+    response = client.get("/api/trips/feed")
+
+    assert response.status_code == 200
+    feed_trip = next(item for item in response.json() if item["id"] == trip["id"])
+    assert feed_trip["title"] == "Tokyo food weekend"
+    assert feed_trip["trip_summary"] == "A short Tokyo trip."
+    assert feed_trip["author"]["username"] == "trip_owner"
+
+
+def test_private_trip_does_not_appear_in_feed(
+    client,
+    owner_headers,
+    saved_trip_payload,
+):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    response = client.get("/api/trips/feed")
+
+    assert response.status_code == 200
+    assert all(item["id"] != trip["id"] for item in response.json())
+
+
+def test_guest_can_view_public_trip(client, owner_headers, saved_trip_payload):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+    publish_response = client.patch(
+        f"/api/trips/{trip['id']}",
+        json={"is_public": True},
+        headers=owner_headers,
+    )
+    assert publish_response.status_code == 200
+
+    response = client.get(f"/api/trips/{trip['id']}")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == trip["id"]
+
+
+def test_guest_cannot_view_private_trip(client, owner_headers, saved_trip_payload):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    response = client.get(f"/api/trips/{trip['id']}")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Trip not found"
+
+
+def test_owner_can_view_own_private_trip(client, owner_headers, saved_trip_payload):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    response = client.get(
+        f"/api/trips/{trip['id']}",
+        headers=owner_headers,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["id"] == trip["id"]
+
+
+def test_other_user_cannot_update_or_delete_trip(
+    client,
+    owner_headers,
+    other_user_headers,
+    saved_trip_payload,
+):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    update_response = client.patch(
+        f"/api/trips/{trip['id']}",
+        json={"title": "Unauthorized change"},
+        headers=other_user_headers,
+    )
+    delete_response = client.delete(
+        f"/api/trips/{trip['id']}",
+        headers=other_user_headers,
+    )
+
+    assert update_response.status_code == 404
+    assert delete_response.status_code == 404
+
+
+def test_owner_can_update_and_delete_trip(client, owner_headers, saved_trip_payload):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    update_response = client.patch(
+        f"/api/trips/{trip['id']}",
+        json={"title": "Tokyo food journey", "is_public": True},
+        headers=owner_headers,
+    )
+
+    assert update_response.status_code == 200
+    assert update_response.json()["title"] == "Tokyo food journey"
+    assert update_response.json()["is_public"] is True
+
+    delete_response = client.delete(
+        f"/api/trips/{trip['id']}",
+        headers=owner_headers,
+    )
+
+    assert delete_response.status_code == 204
+
+    get_response = client.get(
+        f"/api/trips/{trip['id']}",
+        headers=owner_headers,
+    )
+    assert get_response.status_code == 404
