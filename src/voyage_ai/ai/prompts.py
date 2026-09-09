@@ -15,6 +15,7 @@ Requirements:
 - Prefer specific, useful activities that match the user's preferences.
 - Do not present uncertain information—such as opening hours, availability, or exact prices—as fact.
 - Put uncertainty and important caveats in the plan's assumptions or warnings.
+- Use the get_weather tool when weather information would materially improve the itinerary.
 
 """
 
