@@ -1,8 +1,6 @@
 import json
 import logging
 import time
-from datetime import date
-from decimal import Decimal
 
 from openai import AsyncOpenAI
 
@@ -96,26 +94,3 @@ async def refine_trip_plan(
         total_tokens,
     )
     return new_trip_plan
-
-
-if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    )
-
-    import asyncio
-
-    test_request = TripGenerationRequest(
-        destination="Rome",
-        start_date=date(2026, 10, 1),
-        end_date=date(2026, 10, 5),
-        budget=Decimal(1500),
-        currency="USD",
-        travellers=1,
-        travel_pace="balanced",
-        preferences="History, Italian food, and walkable sightseeing.",
-    )
-
-    result = asyncio.run(generate_trip_plan(test_request))
-    print(result)
