@@ -4,6 +4,7 @@ import time
 
 from openai import AsyncOpenAI
 from openai.types.responses import ParsedResponse, ResponseInputItemParam
+from pydantic import ValidationError
 
 from voyage_ai.ai.prompts import TRIP_PLANNER_INSTRUCTIONS, TRIP_REFINER_INSTRUCTIONS
 from voyage_ai.ai.schemas import TripPlan
@@ -59,34 +60,58 @@ def log_ai_metrics(
 async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
     started_at = time.perf_counter()
 
-    first_response = await client.responses.parse(
-        model="gpt-5.6-luna",
-        instructions=TRIP_PLANNER_INSTRUCTIONS,
-        input=request.model_dump_json(),
-        text_format=TripPlan,
-        tools=[WEATHER_TOOL],
-    )
+    try:
+        first_response = await client.responses.parse(
+            model="gpt-5.6-luna",
+            instructions=TRIP_PLANNER_INSTRUCTIONS,
+            input=request.model_dump_json(),
+            text_format=TripPlan,
+            tools=[WEATHER_TOOL],
+        )
 
-    responses = [first_response]
+        responses = [first_response]
 
-    tool_outputs: list[ResponseInputItemParam] = []
+        tool_outputs: list[ResponseInputItemParam] = []
 
-    for item in first_response.output:
-        if item.type == "function_call" and item.name == "get_weather":
-            arguments = json.loads(item.arguments)
+        for item in first_response.output:
+            if item.type == "function_call" and item.name == "get_weather":
+                arguments = json.loads(item.arguments)
 
-            weather = await get_weather(**arguments)
+                weather = await get_weather(**arguments)
 
-            tool_outputs.append(
-                {
-                    "type": "function_call_output",
-                    "call_id": item.call_id,
-                    "output": json.dumps(weather),
-                },
+                tool_outputs.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": item.call_id,
+                        "output": json.dumps(weather),
+                    },
+                )
+
+        if not tool_outputs:
+            trip_plan = first_response.output_parsed
+
+            if trip_plan is None:
+                raise RuntimeError("OpenAI returned no structured trip plan")
+
+            log_ai_metrics(
+                operation="Trip generation",
+                started_at=started_at,
+                responses=responses,
             )
 
-    if not tool_outputs:
-        trip_plan = first_response.output_parsed
+            return trip_plan
+
+        final_response = await client.responses.parse(
+            model="gpt-5.6-luna",
+            instructions=TRIP_PLANNER_INSTRUCTIONS,
+            previous_response_id=first_response.id,
+            input=tool_outputs,
+            text_format=TripPlan,
+        )
+
+        responses.append(final_response)
+
+        trip_plan = final_response.output_parsed
 
         if trip_plan is None:
             raise RuntimeError("OpenAI returned no structured trip plan")
@@ -95,33 +120,14 @@ async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
             operation="Trip generation",
             started_at=started_at,
             responses=responses,
+            tool_call_count=len(tool_outputs),
         )
 
         return trip_plan
 
-    final_response = await client.responses.parse(
-        model="gpt-5.6-luna",
-        instructions=TRIP_PLANNER_INSTRUCTIONS,
-        previous_response_id=first_response.id,
-        input=tool_outputs,
-        text_format=TripPlan,
-    )
-
-    responses.append(final_response)
-
-    trip_plan = final_response.output_parsed
-
-    if trip_plan is None:
-        raise RuntimeError("OpenAI returned no structured trip plan")
-
-    log_ai_metrics(
-        operation="Trip generation",
-        started_at=started_at,
-        responses=responses,
-        tool_call_count=len(tool_outputs),
-    )
-
-    return trip_plan
+    except ValidationError as exc:
+        logger.exception("OpenAI returned a trip plan that failed Pydantic validation")
+        raise RuntimeError("OpenAI returned an invalid trip plan") from exc
 
 
 async def refine_trip_plan(
@@ -131,32 +137,39 @@ async def refine_trip_plan(
 ) -> TripPlan:
     started_at = time.perf_counter()
 
-    input_payload = {
-        "original_generation_request": original_generation_request.model_dump(
-            mode="json",
-        ),
-        "current_trip_plan": current_trip_plan.model_dump(mode="json"),
-        "refinement_instruction": refinement.instruction,
-    }
+    try:
+        input_payload = {
+            "original_generation_request": original_generation_request.model_dump(
+                mode="json",
+            ),
+            "current_trip_plan": current_trip_plan.model_dump(mode="json"),
+            "refinement_instruction": refinement.instruction,
+        }
 
-    response = await client.responses.parse(
-        model="gpt-5.6-luna",
-        instructions=TRIP_REFINER_INSTRUCTIONS,
-        input=json.dumps(input_payload),
-        text_format=TripPlan,
-    )
+        response = await client.responses.parse(
+            model="gpt-5.6-luna",
+            instructions=TRIP_REFINER_INSTRUCTIONS,
+            input=json.dumps(input_payload),
+            text_format=TripPlan,
+        )
 
-    responses = [response]
+        responses = [response]
 
-    new_trip_plan = response.output_parsed
+        new_trip_plan = response.output_parsed
 
-    if new_trip_plan is None:
-        raise RuntimeError("OpenAI returned no structured refined trip plan")
+        if new_trip_plan is None:
+            raise RuntimeError("OpenAI returned no structured refined trip plan")
 
-    log_ai_metrics(
-        operation="Trip refinement",
-        started_at=started_at,
-        responses=responses,
-    )
+        log_ai_metrics(
+            operation="Trip refinement",
+            started_at=started_at,
+            responses=responses,
+        )
 
-    return new_trip_plan
+        return new_trip_plan
+
+    except ValidationError as exc:
+        logger.exception(
+            "OpenAI returned a refined trip plan that failed Pydantic validation"
+        )
+        raise RuntimeError("OpenAI returned an invalid refined trip plan") from exc
