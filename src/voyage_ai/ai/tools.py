@@ -212,7 +212,7 @@ async def get_exchange_rate(base_currency: str, quote_currency: str) -> dict:
             "quote_currency": quote_currency,
             "available": True,
             "rate": data["rate"],
-            "date": ["date"],
+            "date": data["date"],
             "source": "frankfurter",
         }
 
