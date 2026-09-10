@@ -197,12 +197,34 @@ def test_generate_trip_forwards_valid_attachment(
     assert response.status_code == 200
     mock_planner.assert_awaited_once()
 
+    assert mock_planner.await_args is not None
     request, attachments = mock_planner.await_args.args
     assert request.destination == "Tokyo"
     assert len(attachments) == 1
     assert attachments[0].filename == "hotel.jpg"
     assert attachments[0].content_type == "image/jpeg"
     assert attachments[0].content == b"\xff\xd8\xffimage-content"
+
+
+def test_generate_trip_rejects_invalid_date_range(
+    client,
+    sample_trip_request,
+    monkeypatch,
+):
+    mock_planner = AsyncMock()
+
+    monkeypatch.setattr(
+        "voyage_ai.trips.router.generate_trip_service",
+        mock_planner,
+    )
+
+    response = client.post(
+        "/api/trips/generate",
+        data={**sample_trip_request, "end_date": "2026-10-10"},
+    )
+
+    assert response.status_code == 422
+    mock_planner.assert_not_awaited()
 
 
 def test_public_trip_appears_in_feed(client, owner_headers, saved_trip_payload):
@@ -320,3 +342,56 @@ def test_owner_can_update_and_delete_trip(client, owner_headers, saved_trip_payl
         headers=owner_headers,
     )
     assert get_response.status_code == 404
+
+
+def test_owner_can_refine_saved_trip(
+    client,
+    owner_headers,
+    saved_trip_payload,
+    sample_trip_plan,
+    monkeypatch,
+):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+    refined_plan = sample_trip_plan.model_copy(
+        update={"trip_summary": "A more relaxed Tokyo trip."},
+    )
+    mock_refiner = AsyncMock(return_value=refined_plan)
+    mock_enricher = AsyncMock(return_value=refined_plan)
+
+    monkeypatch.setattr(
+        "voyage_ai.trips.service.refine_trip_plan",
+        mock_refiner,
+    )
+    monkeypatch.setattr(
+        "voyage_ai.trips.service.enrich_trip_plan",
+        mock_enricher,
+    )
+
+    response = client.post(
+        f"/api/trips/{trip['id']}/refine",
+        json={"instruction": "Make the itinerary more relaxed."},
+        headers=owner_headers,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["trip_plan"]["trip_summary"] == "A more relaxed Tokyo trip."
+    mock_refiner.assert_awaited_once()
+    mock_enricher.assert_awaited_once_with(refined_plan)
+
+
+def test_other_user_cannot_refine_trip(
+    client,
+    owner_headers,
+    other_user_headers,
+    saved_trip_payload,
+):
+    trip = create_saved_trip(client, owner_headers, saved_trip_payload)
+
+    response = client.post(
+        f"/api/trips/{trip['id']}/refine",
+        json={"instruction": "Make the itinerary more relaxed."},
+        headers=other_user_headers,
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Trip not found"

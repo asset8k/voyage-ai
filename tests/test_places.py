@@ -1,7 +1,16 @@
+from datetime import date
+from unittest.mock import AsyncMock
+
 import httpx
 import pytest
 
-from voyage_ai.places.service import GOOGLE_PLACES_TEXT_SEARCH_URL, resolve_place
+from voyage_ai.ai.schemas import Activity, BudgetBreakdown, DayPlan, TripPlan
+from voyage_ai.places.schemas import ResolvedPlace
+from voyage_ai.places.service import (
+    GOOGLE_PLACES_TEXT_SEARCH_URL,
+    enrich_trip_plan,
+    resolve_place,
+)
 
 
 class FakeResponse:
@@ -101,3 +110,83 @@ async def test_resolve_place_skips_blank_query(monkeypatch) -> None:
     place = await resolve_place("   ")
 
     assert place is None
+
+
+@pytest.mark.asyncio
+async def test_enrich_trip_plan_deduplicates_queries_and_skips_missing_places(
+    monkeypatch,
+) -> None:
+    resolved_place = ResolvedPlace(
+        place_id="beijing-cctv",
+        name="CCTV Headquarters",
+        formatted_address="Beijing, China",
+        latitude=39.914,
+        longitude=116.456,
+    )
+    resolver = AsyncMock(side_effect=[resolved_place, None])
+    monkeypatch.setattr("voyage_ai.places.service.resolve_place", resolver)
+
+    trip_plan = TripPlan(
+        destination="Beijing",
+        trip_summary="A short Beijing trip.",
+        days=[
+            DayPlan(
+                day=1,
+                date=date(2026, 10, 10),
+                title="Modern Beijing",
+                activities=[
+                    Activity(
+                        start_time="09:00",
+                        end_time="10:00",
+                        name="CCTV Headquarters",
+                        description="See the building from the outside.",
+                        location="Beijing CBD",
+                        map_queries=[
+                            "CCTV Headquarters, Beijing",
+                            " CCTV Headquarters, Beijing ",
+                        ],
+                        category="sightseeing",
+                        estimated_cost=0,
+                    ),
+                    Activity(
+                        start_time="11:00",
+                        end_time="12:00",
+                        name="Walk in Beijing CBD",
+                        description="Explore the surrounding streets.",
+                        location="Beijing CBD",
+                        map_queries=[
+                            "CCTV Headquarters, Beijing",
+                            "Unknown place, Beijing",
+                        ],
+                        category="walking",
+                        estimated_cost=0,
+                    ),
+                ],
+                estimated_daily_cost=1,
+            ),
+        ],
+        budget=BudgetBreakdown(
+            accommodation=0,
+            food=0,
+            transport=0,
+            activities=0,
+            other=1,
+            total=1,
+        ),
+        recommendations=[],
+        warnings=[],
+        packing_tips=[],
+        assumptions=[],
+        currency="USD",
+    )
+
+    result = await enrich_trip_plan(trip_plan)
+
+    assert result is trip_plan
+    first_activity, second_activity = trip_plan.days[0].activities
+    assert first_activity.resolved_places == [resolved_place]
+    assert second_activity.resolved_places == [resolved_place]
+    assert [call.args[0] for call in resolver.await_args_list] == [
+        "CCTV Headquarters, Beijing",
+        "Unknown place, Beijing",
+    ]
