@@ -24,6 +24,18 @@ class DayPlan(BaseModel):
     activities: list[Activity] = Field(min_length=1)
     estimated_daily_cost: float = Field(ge=0)
 
+    @model_validator(mode="after")
+    def validate_daily_cost(self) -> Self:
+
+        if self.estimated_daily_cost < sum(
+            activity.estimated_cost for activity in self.activities
+        ):
+            raise ValueError(
+                "estimated_daily_cost must be greater than or equal to the sum of activity estimated_cost values"
+            )
+
+        return self
+
 
 class BudgetBreakdown(BaseModel):
     accommodation: float = Field(ge=0)

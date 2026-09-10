@@ -48,7 +48,7 @@ WEATHER_TOOL: FunctionToolParam = {
         "properties": {
             "destination": {
                 "type": "string",
-                "description": "City and country, for example Astana, Kazakhstan.",
+                "description": "City name only, for example Prague or Astana. Do not include a country.",
             },
             "date": {
                 "type": "string",
@@ -100,8 +100,11 @@ async def get_coordinates(
     client: httpx.AsyncClient,
     destination: str,
 ) -> tuple[float, float] | None:
+    city = destination.split(",", maxsplit=1)[0].strip()
+
     response = await client.get(
-        GEOCODING_URL, params={"name": destination, "count": 1, "language": "en"}
+        GEOCODING_URL,
+        params={"name": city, "count": 1, "language": "en"},
     )
     response.raise_for_status()
 
