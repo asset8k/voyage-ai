@@ -3,6 +3,7 @@ from openai.types.responses import FunctionToolParam
 
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
+CURRENCY_RATE_URL = "https://api.frankfurter.dev/v2/rate"
 
 WMO_WEATHER_CODES: dict[int, str] = {
     0: "Clear sky",
@@ -56,6 +57,39 @@ WEATHER_TOOL: FunctionToolParam = {
             },
         },
         "required": ["destination", "date"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+EXCHANGE_RATE_TOOL: FunctionToolParam = {
+    "type": "function",
+    "name": "get_exchange_rate",
+    "description": (
+        "Get the latest exchange rate between two ISO 4217 currencies. "
+        "Use this when the trip budget currency differs from the destination's "
+        "local currency, or when the user explicitly asks for a currency conversion. "
+        "The returned rate is current and indicative, not a guaranteed future rate."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "base_currency": {
+                "type": "string",
+                "description": (
+                    "The currency being converted from as a three-letter ISO 4217 "
+                    "code, for example USD."
+                ),
+            },
+            "quote_currency": {
+                "type": "string",
+                "description": (
+                    "The currency being converted to as a three-letter ISO 4217 "
+                    "code, for example KZT."
+                ),
+            },
+        },
+        "required": ["base_currency", "quote_currency"],
         "additionalProperties": False,
     },
     "strict": True,
@@ -152,4 +186,36 @@ async def get_weather(destination: str, date: str) -> dict:
             "available": False,
             "reason": "Weather service is temporarily unavailable",
             "source": "open-meteo",
+        }
+
+
+async def get_exchange_rate(base_currency: str, quote_currency: str) -> dict:
+    base_currency = base_currency.upper()
+    quote_currency = quote_currency.upper()
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{CURRENCY_RATE_URL}/{base_currency}/{quote_currency}"
+            )
+            response.raise_for_status()
+
+        data = response.json()
+
+        return {
+            "base_currency": base_currency,
+            "quote_currency": quote_currency,
+            "available": True,
+            "rate": data["rate"],
+            "date": ["date"],
+            "source": "frankfurter",
+        }
+
+    except httpx.HTTPError:
+        return {
+            "base_currency": base_currency,
+            "quote_currency": quote_currency,
+            "available": False,
+            "reason": "Currency exchange service is temporarily unavailable",
+            "source": "frankfurter",
         }

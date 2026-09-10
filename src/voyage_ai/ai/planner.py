@@ -8,7 +8,12 @@ from pydantic import ValidationError
 
 from voyage_ai.ai.prompts import TRIP_PLANNER_INSTRUCTIONS, TRIP_REFINER_INSTRUCTIONS
 from voyage_ai.ai.schemas import TripPlan
-from voyage_ai.ai.tools import WEATHER_TOOL, get_weather
+from voyage_ai.ai.tools import (
+    EXCHANGE_RATE_TOOL,
+    WEATHER_TOOL,
+    get_exchange_rate,
+    get_weather,
+)
 from voyage_ai.config import settings
 from voyage_ai.trips.schemas import TripGenerationRequest, TripRefinementRequest
 
@@ -66,7 +71,7 @@ async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
             instructions=TRIP_PLANNER_INSTRUCTIONS,
             input=request.model_dump_json(),
             text_format=TripPlan,
-            tools=[WEATHER_TOOL],
+            tools=[WEATHER_TOOL, EXCHANGE_RATE_TOOL],
         )
 
         responses = [first_response]
@@ -74,9 +79,13 @@ async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
         tool_outputs: list[ResponseInputItemParam] = []
 
         for item in first_response.output:
-            if item.type == "function_call" and item.name == "get_weather":
-                arguments = json.loads(item.arguments)
+            if item.type != "function_call":
+                continue
 
+            logger.info("AI tool called: name=%s", item.name)
+
+            if item.name == "get_weather":
+                arguments = json.loads(item.arguments)
                 weather = await get_weather(**arguments)
 
                 tool_outputs.append(
@@ -84,6 +93,18 @@ async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
                         "type": "function_call_output",
                         "call_id": item.call_id,
                         "output": json.dumps(weather),
+                    },
+                )
+
+            elif item.name == "get_exchange_rate":
+                arguments = json.loads(item.arguments)
+                exchange_rate = await get_exchange_rate(**arguments)
+
+                tool_outputs.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": item.call_id,
+                        "output": json.dumps(exchange_rate),
                     },
                 )
 
