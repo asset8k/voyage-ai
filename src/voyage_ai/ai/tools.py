@@ -40,6 +40,7 @@ WEATHER_TOOL: FunctionToolParam = {
     "type": "function",
     "name": "get_weather",
     "description": (
+        "Use this tool for every trip date within the forecast range when the user asks for clothing or packing advice, or when the itinerary is substantially outdoors. "
         "Get a daily weather forecast for a destination and date. "
         "Forecasts may be unavailable for dates more than 16 days ahead."
     ),
@@ -66,6 +67,7 @@ EXCHANGE_RATE_TOOL: FunctionToolParam = {
     "type": "function",
     "name": "get_exchange_rate",
     "description": (
+        "Use this tool whenever the requested trip currency differs from the destination's usual local currency. Use the rate only as planning context; all itinerary costs must remain in the requested currency. "
         "Get the latest exchange rate between two ISO 4217 currencies. "
         "Use this when the trip budget currency differs from the destination's "
         "local currency, or when the user explicitly asks for a currency conversion. "

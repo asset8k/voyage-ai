@@ -11,6 +11,7 @@ class Activity(BaseModel):
     name: str = Field(min_length=1, max_length=64)
     description: str = Field(min_length=1, max_length=512)
     location: str = Field(min_length=1, max_length=120)
+    map_queries: list[str] = Field(default_factory=list, max_length=2)
     category: str = Field(min_length=1, max_length=64)
     estimated_cost: float = Field(ge=0)
     travel_time_to_next: str | None = Field(default=None, max_length=64)
@@ -71,3 +72,17 @@ class TripPlan(BaseModel):
     packing_tips: list[str]
     assumptions: list[str]
     currency: str = Field(pattern=r"^[A-Z]{3}$")
+
+    @model_validator(mode="after")
+    def validate_total_matches_days(self) -> Self:
+
+        if not isclose(
+            self.budget.total,
+            sum(day.estimated_daily_cost for day in self.days),
+            abs_tol=0.01,
+        ):
+            raise ValueError(
+                "budget.total must be equal to the sum of estimated_daily_cost values"
+            )
+
+        return self
