@@ -4,6 +4,8 @@ from typing import Self
 
 from pydantic import BaseModel, Field, model_validator
 
+from voyage_ai.places.schemas import ResolvedPlace
+
 
 class Activity(BaseModel):
     start_time: str = Field(pattern=r"^\d{2}:\d{2}$")
@@ -15,6 +17,10 @@ class Activity(BaseModel):
     category: str = Field(min_length=1, max_length=64)
     estimated_cost: float = Field(ge=0)
     travel_time_to_next: str | None = Field(default=None, max_length=64)
+    resolved_places: list[ResolvedPlace] = Field(
+        default_factory=list,
+        max_length=2,
+    )
 
 
 class DayPlan(BaseModel):

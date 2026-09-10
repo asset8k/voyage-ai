@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     openai_api_key: SecretStr
+    google_places_api_key: SecretStr
 
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file

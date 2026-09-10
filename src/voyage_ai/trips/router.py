@@ -8,7 +8,6 @@ from fastapi import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from voyage_ai.ai.planner import generate_trip_plan
 from voyage_ai.ai.schemas import TripPlan
 from voyage_ai.auth.dependencies import get_optional_current_user, require_current_user
 from voyage_ai.database import get_db
@@ -21,6 +20,9 @@ from voyage_ai.trips.schemas import (
     TripListItem,
     TripRefinementRequest,
     TripUpdate,
+)
+from voyage_ai.trips.service import (
+    generate_trip as generate_trip_service,
 )
 from voyage_ai.trips.service import (
     get_public_trips,
@@ -45,7 +47,7 @@ async def generate_trip(
     data: TripGenerationRequest,
 ) -> TripPlan:
     try:
-        return await generate_trip_plan(data)
+        return await generate_trip_service(data)
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

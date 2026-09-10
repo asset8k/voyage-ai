@@ -65,12 +65,12 @@ def sample_trip_plan() -> TripPlan:
     )
 
     budget = BudgetBreakdown(
-        accommodation=500,
-        food=200,
-        transport=100,
-        activities=100,
-        other=100,
-        total=1000,
+        accommodation=0,
+        food=10,
+        transport=0,
+        activities=0,
+        other=0,
+        total=10,
     )
 
     return TripPlan(
@@ -114,7 +114,7 @@ def test_generate_trip(
     mock_planner = AsyncMock(return_value=sample_trip_plan)
 
     monkeypatch.setattr(
-        "voyage_ai.trips.router.generate_trip_plan",
+        "voyage_ai.trips.router.generate_trip_service",
         mock_planner,
     )
 
@@ -133,7 +133,7 @@ def test_generate_trip_invalid_request(
     mock_planner = AsyncMock()
 
     monkeypatch.setattr(
-        "voyage_ai.trips.router.generate_trip_plan",
+        "voyage_ai.trips.router.generate_trip_service",
         mock_planner,
     )
 
@@ -156,7 +156,7 @@ def test_generate_trip_runtime_error(
     )
 
     monkeypatch.setattr(
-        "voyage_ai.trips.router.generate_trip_plan",
+        "voyage_ai.trips.router.generate_trip_service",
         mock_planner,
     )
 

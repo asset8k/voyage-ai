@@ -29,6 +29,7 @@ Requirements:
 - Do not include aliases or alternative names for the same physical place; use one best-known name.
 - If a specific place cannot be identified from the itinerary, return an empty map_queries list.
 - A named transport terminal is a valid map query when it is a meaningful arrival, departure, or transfer point in the itinerary.
+- resolved_places is populated only by the backend. Always return an empty resolved_places list and never invent provider data.
 
 """
 
@@ -60,5 +61,6 @@ Rules:
 - Do not include aliases or alternative names for the same physical place; use one best-known name.
 - If a specific place cannot be identified from the itinerary, return an empty map_queries list.
 - A named transport terminal is a valid map query when it is a meaningful arrival, departure, or transfer point in the itinerary.
+- resolved_places is populated only by the backend. Always return an empty resolved_places list and never invent provider data.
 
 """

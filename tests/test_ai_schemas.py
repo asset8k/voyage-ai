@@ -9,6 +9,7 @@ from voyage_ai.ai.schemas import (
     DayPlan,
     TripPlan,
 )
+from voyage_ai.places.schemas import ResolvedPlace
 
 
 def test_trip_plan_serializes() -> None:
@@ -115,6 +116,20 @@ def test_activity_map_queries_default_to_empty_list() -> None:
     assert activity.map_queries == []
 
 
+def test_activity_resolved_places_default_to_empty_list() -> None:
+    activity = Activity(
+        start_time="09:00",
+        end_time="11:00",
+        name="Museum visit",
+        description="Visit a local museum.",
+        location="City centre",
+        category="sightseeing",
+        estimated_cost=20,
+    )
+
+    assert activity.resolved_places == []
+
+
 def test_activity_allows_map_queries() -> None:
     activity = Activity(
         start_time="09:00",
@@ -130,6 +145,29 @@ def test_activity_allows_map_queries() -> None:
     assert activity.map_queries == [
         "National Museum of the Republic of Kazakhstan, Astana"
     ]
+
+
+def test_activity_allows_resolved_places() -> None:
+    resolved_place = ResolvedPlace(
+        place_id="ChIJtest",
+        name="National Museum of Kazakhstan",
+        formatted_address="Astana, Kazakhstan",
+        latitude=51.118,
+        longitude=71.431,
+    )
+    activity = Activity(
+        start_time="09:00",
+        end_time="11:00",
+        name="Museum visit",
+        description="Visit a local museum.",
+        location="Astana",
+        map_queries=["National Museum of Kazakhstan, Astana"],
+        category="sightseeing",
+        estimated_cost=20,
+        resolved_places=[resolved_place],
+    )
+
+    assert activity.resolved_places == [resolved_place]
 
 
 def test_activity_rejects_more_than_two_map_queries() -> None:
