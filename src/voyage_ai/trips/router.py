@@ -1,14 +1,22 @@
-from typing import Annotated
+from datetime import date
+from decimal import Decimal
+from typing import Annotated, Literal
 
 from fastapi import (
     APIRouter,
     Depends,
+    File,
+    Form,
     HTTPException,
+    UploadFile,
     status,
 )
+from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError, WithJsonSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from voyage_ai.ai.schemas import TripPlan
+from voyage_ai.ai.uploads import validate_uploads
 from voyage_ai.auth.dependencies import get_optional_current_user, require_current_user
 from voyage_ai.database import get_db
 from voyage_ai.trips.model import Trip
@@ -36,7 +44,42 @@ from voyage_ai.trips.service import (
 from voyage_ai.users.model import User
 from voyage_ai.users.schemas import UserPublic
 
+OpenAPIUploadFile = Annotated[
+    UploadFile,
+    WithJsonSchema(
+        {
+            "type": "string",
+            "format": "binary",
+        }
+    ),
+]
+
 router = APIRouter(prefix="/trips", tags=["trips"])
+
+
+def parse_trip_generation_form(
+    destination: Annotated[str, Form()],
+    start_date: Annotated[date, Form()],
+    end_date: Annotated[date, Form()],
+    budget: Annotated[Decimal, Form()],
+    currency: Annotated[str, Form()],
+    travellers: Annotated[int, Form()],
+    travel_pace: Annotated[Literal["relaxed", "balanced", "fast"], Form()],
+    preferences: Annotated[str, Form()],
+) -> TripGenerationRequest:
+    try:
+        return TripGenerationRequest(
+            destination=destination,
+            start_date=start_date,
+            end_date=end_date,
+            budget=budget,
+            currency=currency,
+            travellers=travellers,
+            travel_pace=travel_pace,
+            preferences=preferences,
+        )
+    except ValidationError as exc:
+        raise RequestValidationError(exc.errors()) from exc
 
 
 @router.post(
@@ -44,10 +87,16 @@ router = APIRouter(prefix="/trips", tags=["trips"])
     response_model=TripPlan,
 )
 async def generate_trip(
-    data: TripGenerationRequest,
+    data: Annotated[TripGenerationRequest, Depends(parse_trip_generation_form)],
+    files: Annotated[
+        list[OpenAPIUploadFile],
+        File(default_factory=list),
+    ],
 ) -> TripPlan:
+    attachments = await validate_uploads(files)
+
     try:
-        return await generate_trip_service(data)
+        return await generate_trip_service(data, attachments)
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

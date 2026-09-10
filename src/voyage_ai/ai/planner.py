@@ -1,9 +1,14 @@
+import base64
 import json
 import logging
 import time
 
 from openai import AsyncOpenAI
-from openai.types.responses import ParsedResponse, ResponseInputItemParam
+from openai.types.responses import (
+    ParsedResponse,
+    ResponseInputContentParam,
+    ResponseInputItemParam,
+)
 from pydantic import ValidationError
 
 from voyage_ai.ai.prompts import TRIP_PLANNER_INSTRUCTIONS, TRIP_REFINER_INSTRUCTIONS
@@ -14,6 +19,7 @@ from voyage_ai.ai.tools import (
     get_exchange_rate,
     get_weather,
 )
+from voyage_ai.ai.uploads import UploadedAttachment
 from voyage_ai.config import settings
 from voyage_ai.trips.schemas import TripGenerationRequest, TripRefinementRequest
 
@@ -62,14 +68,57 @@ def log_ai_metrics(
     )
 
 
-async def generate_trip_plan(request: TripGenerationRequest) -> TripPlan:
+def build_generation_input(
+    request: TripGenerationRequest,
+    attachments: list[UploadedAttachment],
+) -> list[ResponseInputItemParam]:
+    content: list[ResponseInputContentParam] = [
+        {
+            "type": "input_text",
+            "text": request.model_dump_json(),
+        }
+    ]
+
+    for attachment in attachments:
+        encoded_content = base64.b64encode(attachment.content).decode("ascii")
+
+        if attachment.content_type in {"image/jpeg", "image/png"}:
+            content.append(
+                {
+                    "type": "input_image",
+                    "image_url": (
+                        f"data:{attachment.content_type};base64,{encoded_content}"
+                    ),
+                    "detail": "auto",
+                }
+            )
+        else:
+            content.append(
+                {
+                    "type": "input_file",
+                    "filename": attachment.filename,
+                    "file_data": encoded_content,
+                }
+            )
+
+    return [
+        {
+            "role": "user",
+            "content": content,
+        }
+    ]
+
+
+async def generate_trip_plan(
+    request: TripGenerationRequest, attachments: list[UploadedAttachment]
+) -> TripPlan:
     started_at = time.perf_counter()
 
     try:
         first_response = await client.responses.parse(
             model="gpt-5.6-luna",
             instructions=TRIP_PLANNER_INSTRUCTIONS,
-            input=request.model_dump_json(),
+            input=build_generation_input(request, attachments),
             text_format=TripPlan,
             tools=[WEATHER_TOOL, EXCHANGE_RATE_TOOL],
         )

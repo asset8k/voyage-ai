@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from voyage_ai.ai.planner import generate_trip_plan, refine_trip_plan
 from voyage_ai.ai.schemas import TripPlan
+from voyage_ai.ai.uploads import UploadedAttachment
 from voyage_ai.places.service import enrich_trip_plan
 from voyage_ai.trips.model import Trip
 from voyage_ai.trips.schemas import (
@@ -124,6 +125,8 @@ async def refine_saved_trip(
     return trip
 
 
-async def generate_trip(data: TripGenerationRequest) -> TripPlan:
-    trip_plan = await generate_trip_plan(data)
+async def generate_trip(
+    data: TripGenerationRequest, attachments: list[UploadedAttachment]
+) -> TripPlan:
+    trip_plan = await generate_trip_plan(data, attachments)
     return await enrich_trip_plan(trip_plan)

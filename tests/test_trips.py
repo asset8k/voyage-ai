@@ -118,7 +118,7 @@ def test_generate_trip(
         mock_planner,
     )
 
-    response = client.post("/api/trips/generate", json=sample_trip_request)
+    response = client.post("/api/trips/generate", data=sample_trip_request)
 
     assert response.status_code == 200
     assert response.json()["destination"] == "Tokyo"
@@ -139,7 +139,7 @@ def test_generate_trip_invalid_request(
 
     response = client.post(
         "/api/trips/generate",
-        json={**sample_trip_request, "budget": 0},
+        data={**sample_trip_request, "budget": 0},
     )
 
     assert response.status_code == 422
@@ -160,13 +160,49 @@ def test_generate_trip_runtime_error(
         mock_planner,
     )
 
-    response = client.post("/api/trips/generate", json=sample_trip_request)
+    response = client.post("/api/trips/generate", data=sample_trip_request)
 
     assert response.status_code == 502
     assert (
         response.json()["detail"] == "Unable to generate a trip plan. Please try again."
     )
     mock_planner.assert_awaited_once()
+
+
+def test_generate_trip_forwards_valid_attachment(
+    client,
+    sample_trip_request,
+    sample_trip_plan,
+    monkeypatch,
+):
+    mock_planner = AsyncMock(return_value=sample_trip_plan)
+
+    monkeypatch.setattr(
+        "voyage_ai.trips.router.generate_trip_service",
+        mock_planner,
+    )
+
+    response = client.post(
+        "/api/trips/generate",
+        data=sample_trip_request,
+        files={
+            "files": (
+                "hotel.jpg",
+                b"\xff\xd8\xffimage-content",
+                "image/jpeg",
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+    mock_planner.assert_awaited_once()
+
+    request, attachments = mock_planner.await_args.args
+    assert request.destination == "Tokyo"
+    assert len(attachments) == 1
+    assert attachments[0].filename == "hotel.jpg"
+    assert attachments[0].content_type == "image/jpeg"
+    assert attachments[0].content == b"\xff\xd8\xffimage-content"
 
 
 def test_public_trip_appears_in_feed(client, owner_headers, saved_trip_payload):
