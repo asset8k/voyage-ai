@@ -93,7 +93,7 @@ export function PlanTripPage() {
       const tripPlan = await generateTrip(form, files)
       saveGeneratedTrip({ request: form, tripPlan })
       success('Your itinerary is ready', 'Review it, then save it whenever you are ready.')
-      navigate('/generated')
+      navigate('/generated', { state: { itineraryJustCreated: true } })
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not create your itinerary. Please check your connection and try again.')
     } finally {

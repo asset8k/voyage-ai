@@ -25,6 +25,7 @@ export function SavedTripDetailPage() {
   const [isFetching, setIsFetching] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
   const [isRefining, setIsRefining] = useState(false)
+  const [hasJustRefined, setHasJustRefined] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
@@ -84,6 +85,7 @@ export function SavedTripDetailPage() {
       const refinedTrip = await refineTrip(trip.id, { instruction: instruction.trim() }, token)
       setTrip(refinedTrip)
       setInstruction('')
+      setHasJustRefined(true)
       success('Itinerary refined', 'Your revised plan is ready to explore.')
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not refine this trip. Please try again.')
@@ -128,7 +130,7 @@ export function SavedTripDetailPage() {
   </>
 
   return (
-    <section className="itinerary-page saved-itinerary-page">
+    <section className={`itinerary-page saved-itinerary-page${hasJustRefined ? ' itinerary-page--arrival' : ''}`}>
       <Link className="back-link" to="/my-trips"><ArrowLeft size={16} />My trips</Link>
       <div className="itinerary-hero"><div className="itinerary-hero__wash" /><div className="itinerary-hero__content"><p className="eyebrow eyebrow--light"><LockKeyhole size={14} />Your saved itinerary</p><h1>{trip.title}</h1><p><MapPin size={16} />{trip.destination} · {formatDateRange(trip.start_date, trip.end_date)}</p></div></div>
       {error && <p className="form-error saved-itinerary-page__error" role="alert">{error}</p>}

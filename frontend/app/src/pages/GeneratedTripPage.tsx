@@ -1,6 +1,6 @@
 import { ArrowRight, CircleDollarSign, MapPin, Sparkles, UserRound } from 'lucide-react'
 import { useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../auth/auth-context'
 import { TripPlanDisplay } from '../components/TripPlanDisplay'
@@ -11,6 +11,7 @@ import { readGeneratedTrip } from '../lib/generation-store'
 import type { TripDetail } from '../types/api'
 
 export function GeneratedTripPage() {
+  const location = useLocation()
   const generatedTrip = readGeneratedTrip()
   const [title, setTitle] = useState('')
   const [savedTrip, setSavedTrip] = useState<TripDetail | null>(null)
@@ -19,6 +20,8 @@ export function GeneratedTripPage() {
   const { accessToken, isLoading, user } = useAuth()
   const { success } = useToast()
   const navigate = useNavigate()
+  const isNewItinerary = (location.state as { itineraryJustCreated?: boolean } | null)
+    ?.itineraryJustCreated === true
 
   if (!generatedTrip) return <Navigate replace to="/" />
 
@@ -68,7 +71,7 @@ export function GeneratedTripPage() {
   )
 
   return (
-    <section className="itinerary-page">
+    <section className={`itinerary-page${isNewItinerary ? ' itinerary-page--arrival' : ''}`}>
       <div className="itinerary-hero"><div className="itinerary-hero__wash" /><div className="itinerary-hero__content"><p className="eyebrow eyebrow--light"><Sparkles size={14} />Your AI-crafted journey</p><h1>{tripPlan.destination}</h1><p><MapPin size={16} />{formatDateRange(request.start_date, request.end_date)}</p></div></div>
       <TripPlanDisplay
         tripPlan={tripPlan}

@@ -12,7 +12,7 @@ function navClassName({ isActive }: { isActive: boolean }): string {
 function AnimatedOutlet() {
   const location = useLocation()
 
-  return <div key={location.pathname} className="page-transition"><Outlet /></div>
+  return <div key={location.key} className="page-transition"><Outlet /></div>
 }
 
 export function AppShell() {

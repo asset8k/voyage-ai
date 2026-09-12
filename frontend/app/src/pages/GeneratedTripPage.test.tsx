@@ -8,12 +8,14 @@ import { generatedTripFixture, userFixture } from '../test/fixtures'
 import { GeneratedTripPage } from './GeneratedTripPage'
 import { ToastProvider } from '../components/ToastProvider'
 
-function renderGeneratedTrip() {
+type GeneratedTripEntry = string | { pathname: string; state?: unknown }
+
+function renderGeneratedTrip(initialEntry: GeneratedTripEntry = '/generated') {
   sessionStorage.setItem('voyage-ai.generated-trip', JSON.stringify(generatedTripFixture))
 
   return render(
     <AuthProvider><ToastProvider>
-      <MemoryRouter initialEntries={['/generated']}>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <Routes>
           <Route path="/generated" element={<GeneratedTripPage />} />
           <Route path="/auth" element={<p>Authentication page</p>} />
@@ -26,6 +28,14 @@ function renderGeneratedTrip() {
 
 describe('GeneratedTripPage saving', () => {
   afterEach(() => vi.unstubAllGlobals())
+
+  it('uses the arrival transition after a newly generated itinerary', () => {
+    renderGeneratedTrip({ pathname: '/generated', state: { itineraryJustCreated: true } })
+
+    expect(screen.getByRole('heading', { name: 'Tokyo' }).closest('section')).toHaveClass(
+      'itinerary-page--arrival',
+    )
+  })
 
   it('sends the generated request and plan with the user bearer token', async () => {
     localStorage.setItem('voyage-ai.access-token', 'token-123')
