@@ -5,17 +5,18 @@ import { describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '../auth/auth-context'
 import { userFixture } from '../test/fixtures'
 import { AppShell } from './AppShell'
+import { ToastProvider } from './ToastProvider'
 
 function renderShell() {
   const signOut = vi.fn()
 
   render(
     <AuthContext.Provider value={{ accessToken: 'token', user: userFixture, isLoading: false, signIn: vi.fn(), signUp: vi.fn(), signOut }}>
-      <MemoryRouter>
+      <ToastProvider><MemoryRouter>
         <Routes>
           <Route element={<AppShell />}><Route index element={<p>Planner</p>} /></Route>
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter></ToastProvider>
     </AuthContext.Provider>,
   )
 

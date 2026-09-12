@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../auth/auth-context'
 import { TripPlanDisplay } from '../components/TripPlanDisplay'
+import { useToast } from '../components/toast-context'
 import { ApiError, saveTrip } from '../lib/api'
 import { formatDateRange, formatMoney } from '../lib/formatting'
 import { readGeneratedTrip } from '../lib/generation-store'
@@ -16,6 +17,7 @@ export function GeneratedTripPage() {
   const [saveError, setSaveError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const { accessToken, isLoading, user } = useAuth()
+  const { success } = useToast()
   const navigate = useNavigate()
 
   if (!generatedTrip) return <Navigate replace to="/" />
@@ -31,11 +33,13 @@ export function GeneratedTripPage() {
     setSaveError(null)
     setIsSaving(true)
     try {
-      setSavedTrip(await saveTrip({
+      const trip = await saveTrip({
         title: title.trim() || null,
         generation_request: request,
         trip_plan: tripPlan,
-      }, accessToken))
+      }, accessToken)
+      setSavedTrip(trip)
+      success('Trip saved', `${trip.title} is now in your private library.`)
     } catch (requestError) {
       setSaveError(requestError instanceof ApiError ? requestError.message : 'We could not save this trip. Please try again.')
     } finally {

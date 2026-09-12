@@ -6,32 +6,19 @@ import {
   useMap,
 } from '@vis.gl/react-google-maps'
 import { Expand, ExternalLink, MapPin, X } from 'lucide-react'
+import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent, MouseEvent } from 'react'
 
 import type { DayPlan, ResolvedPlace } from '../types/api'
+import { getUniqueMapStops } from './map-stops'
+import type { MapStop } from './map-stops'
 
 const mapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined
-
-type MapStop = {
-  place: ResolvedPlace
-  activityName: string
-  startTime: string
-}
 
 type GoogleMapCanvasProps = {
   stops: MapStop[]
   fullScreen?: boolean
-}
-
-function mapStopsForDay(day: DayPlan): MapStop[] {
-  const seen = new Set<string>()
-
-  return day.activities.flatMap((activity) => activity.resolved_places.flatMap((place) => {
-    if (seen.has(place.place_id)) return []
-    seen.add(place.place_id)
-    return [{ place, activityName: activity.name, startTime: activity.start_time }]
-  }))
 }
 
 function googleMapsUrl(place: ResolvedPlace) {
@@ -108,6 +95,12 @@ function MapDialog({ day, stops, onClose }: { day: DayPlan; stops: MapStop[]; on
 
   useEffect(() => {
     dialogRef.current?.focus()
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
   }, [])
 
   function closeOnBackdrop(event: MouseEvent<HTMLDivElement>) {
@@ -118,7 +111,7 @@ function MapDialog({ day, stops, onClose }: { day: DayPlan; stops: MapStop[]; on
     if (event.key === 'Escape') onClose()
   }
 
-  return (
+  return createPortal(
     <div className="map-dialog-backdrop" onMouseDown={closeOnBackdrop}>
       <div
         ref={dialogRef}
@@ -153,12 +146,14 @@ function MapDialog({ day, stops, onClose }: { day: DayPlan; stops: MapStop[]; on
         </footer>
       </div>
     </div>
+    ,
+    document.body,
   )
 }
 
 export function InteractiveMap({ day, apiKey = mapsApiKey }: { day: DayPlan; apiKey?: string }) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const stops = mapStopsForDay(day)
+  const stops = getUniqueMapStops(day)
 
   if (stops.length === 0) {
     return <div className="interactive-map__empty"><MapPin aria-hidden="true" /><span>No map-ready stops for this day yet.</span></div>

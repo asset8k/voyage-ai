@@ -6,12 +6,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '../auth/AuthProvider'
 import { generatedTripFixture, userFixture } from '../test/fixtures'
 import { GeneratedTripPage } from './GeneratedTripPage'
+import { ToastProvider } from '../components/ToastProvider'
 
 function renderGeneratedTrip() {
   sessionStorage.setItem('voyage-ai.generated-trip', JSON.stringify(generatedTripFixture))
 
   return render(
-    <AuthProvider>
+    <AuthProvider><ToastProvider>
       <MemoryRouter initialEntries={['/generated']}>
         <Routes>
           <Route path="/generated" element={<GeneratedTripPage />} />
@@ -19,7 +20,7 @@ function renderGeneratedTrip() {
           <Route path="/my-trips" element={<p>My trips page</p>} />
         </Routes>
       </MemoryRouter>
-    </AuthProvider>,
+    </ToastProvider></AuthProvider>,
   )
 }
 
@@ -48,6 +49,7 @@ describe('GeneratedTripPage saving', () => {
     await user.click(await screen.findByRole('button', { name: 'Save trip' }))
 
     await screen.findByText('Tokyo trip is in your library.')
+    expect(screen.getByRole('status')).toHaveTextContent('Trip saved')
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:8000/api/trips',
       expect.objectContaining({

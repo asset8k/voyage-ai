@@ -1,5 +1,4 @@
 import {
-  CalendarDays,
   ChevronDown,
   FileText,
   MapPin,
@@ -14,6 +13,9 @@ import { useNavigate } from 'react-router-dom'
 import { ApiError, generateTrip } from '../lib/api'
 import { saveGeneratedTrip } from '../lib/generation-store'
 import type { TravelPace, TripGenerationRequest } from '../types/api'
+import { DatePicker } from '../components/DatePicker'
+import { TripProcessingScreen } from '../components/TripProcessingScreen'
+import { useToast } from '../components/toast-context'
 
 const allowedFileTypes = ['image/jpeg', 'image/png', 'application/pdf']
 const maxFileSize = 10 * 1024 * 1024
@@ -38,11 +40,21 @@ export function PlanTripPage() {
   const [files, setFiles] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [travellersInput, setTravellersInput] = useState(String(initialForm.travellers))
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+  const { success } = useToast()
 
   function updateField<K extends keyof TripGenerationRequest>(key: K, value: TripGenerationRequest[K]) {
     setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  function updateTravellers(value: string) {
+    setTravellersInput(value)
+    if (value === '') return
+
+    const parsedValue = Number(value)
+    if (Number.isInteger(parsedValue) && parsedValue >= 1) updateField('travellers', parsedValue)
   }
 
   function addFiles(uploadedFiles: FileList | null) {
@@ -66,6 +78,11 @@ export function PlanTripPage() {
     event.preventDefault()
     setError(null)
 
+    if (!form.start_date || !form.end_date) {
+      setError('Please choose your arrival and departure dates.')
+      return
+    }
+
     if (form.end_date <= form.start_date) {
       setError('Your end date must be after your start date.')
       return
@@ -75,6 +92,7 @@ export function PlanTripPage() {
     try {
       const tripPlan = await generateTrip(form, files)
       saveGeneratedTrip({ request: form, tripPlan })
+      success('Your itinerary is ready', 'Review it, then save it whenever you are ready.')
       navigate('/generated')
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not create your itinerary. Please check your connection and try again.')
@@ -82,6 +100,8 @@ export function PlanTripPage() {
       setIsSubmitting(false)
     }
   }
+
+  if (isSubmitting) return <TripProcessingScreen mode="generation" />
 
   return (
     <section className="planner-page">
@@ -99,19 +119,18 @@ export function PlanTripPage() {
       <form className="trip-form card" onSubmit={handleSubmit}>
         <div className="form-heading">
           <div><p className="eyebrow">Start planning</p><h2>Tell us about your trip</h2></div>
-          <span className="form-heading__step">01 / 01</span>
         </div>
 
         <div className="form-grid form-grid--three">
           <label className="field field--wide"><span>Destination</span><div className="field__control"><MapPin size={18} /><input required maxLength={120} placeholder="Paris, France" value={form.destination} onChange={(event) => updateField('destination', event.target.value)} /></div></label>
-          <label className="field"><span>Arrival</span><div className="field__control"><CalendarDays size={18} /><input required type="date" value={form.start_date} onChange={(event) => updateField('start_date', event.target.value)} /></div></label>
-          <label className="field"><span>Departure</span><div className="field__control"><CalendarDays size={18} /><input required type="date" value={form.end_date} onChange={(event) => updateField('end_date', event.target.value)} /></div></label>
+          <label className="field"><span>Arrival</span><DatePicker label="Arrival" value={form.start_date} onChange={(value) => updateField('start_date', value)} /></label>
+          <label className="field"><span>Departure</span><DatePicker label="Departure" value={form.end_date} minDate={form.start_date} onChange={(value) => updateField('end_date', value)} /></label>
         </div>
 
         <div className="form-grid form-grid--four">
           <label className="field"><span>Total budget</span><div className="field__control"><span className="field__prefix">{form.currency}</span><input required min="1" type="number" value={form.budget} onChange={(event) => updateField('budget', Number(event.target.value))} /></div></label>
-          <label className="field"><span>Currency</span><div className="field__control field__control--select"><select value={form.currency} onChange={(event) => updateField('currency', event.target.value.toUpperCase())}><option>USD</option><option>EUR</option><option>GBP</option><option>KZT</option></select><ChevronDown size={17} /></div></label>
-          <label className="field"><span>Travellers</span><div className="field__control"><Users size={18} /><input required min="1" type="number" value={form.travellers} onChange={(event) => updateField('travellers', Number(event.target.value))} /></div></label>
+          <label className="field"><span>Currency</span><div className="field__control"><input required minLength={3} maxLength={3} className="currency-input" value={form.currency} placeholder="USD" onChange={(event) => updateField('currency', event.target.value.toUpperCase())} list="popular-currencies" /><ChevronDown size={17} /></div><datalist id="popular-currencies"><option value="USD" /><option value="EUR" /><option value="GBP" /><option value="JPY" /><option value="CAD" /><option value="AUD" /><option value="CNY" /><option value="KRW" /><option value="TRY" /><option value="KZT" /><option value="AED" /><option value="THB" /><option value="SGD" /></datalist></label>
+          <label className="field"><span>Travellers</span><div className="field__control"><Users size={18} /><input required min="1" type="number" value={travellersInput} onChange={(event) => updateTravellers(event.target.value)} onBlur={() => { if (travellersInput === '') { setTravellersInput('1'); updateField('travellers', 1) } }} /></div></label>
           <label className="field"><span>Travel pace</span><div className="field__control field__control--select"><select value={form.travel_pace} onChange={(event) => updateField('travel_pace', event.target.value as TravelPace)}><option value="relaxed">Relaxed</option><option value="balanced">Balanced</option><option value="fast">Fast</option></select><ChevronDown size={17} /></div></label>
         </div>
 

@@ -52,10 +52,14 @@ describe('InteractiveMap', () => {
     render(<InteractiveMap day={resolvedDay} apiKey="browser-key" />)
 
     fireEvent.click(screen.getByRole('button', { name: /open map/i }))
-    expect(screen.getByRole('dialog', { name: 'Full-screen map for day 1' })).toBeInTheDocument()
+    const dialog = screen.getByRole('dialog', { name: 'Full-screen map for day 1' })
+    expect(dialog).toBeInTheDocument()
+    expect(dialog.parentElement?.parentElement).toBe(document.body)
+    expect(document.body).toHaveStyle({ overflow: 'hidden' })
     expect(screen.getAllByText('Tokyo Station')).toHaveLength(1)
 
     fireEvent.click(screen.getByRole('button', { name: 'Close full-screen map' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.body).toHaveStyle({ overflow: '' })
   })
 })

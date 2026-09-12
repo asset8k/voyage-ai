@@ -6,17 +6,18 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '../auth/AuthProvider'
 import { userFixture } from '../test/fixtures'
 import { AuthPage } from './AuthPage'
+import { ToastProvider } from '../components/ToastProvider'
 
 function renderAuthPage() {
   return render(
-    <AuthProvider>
+    <AuthProvider><ToastProvider>
       <MemoryRouter initialEntries={['/auth']}>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<p>Returned to planner</p>} />
         </Routes>
       </MemoryRouter>
-    </AuthProvider>,
+    </ToastProvider></AuthProvider>,
   )
 }
 

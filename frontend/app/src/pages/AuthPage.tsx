@@ -5,6 +5,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 
 import { ApiError } from '../lib/api'
 import { useAuth } from '../auth/auth-context'
+import { useToast } from '../components/toast-context'
 
 type Mode = 'login' | 'register'
 type LocationState = { from?: string }
@@ -17,6 +18,7 @@ export function AuthPage() {
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { signIn, signUp, user } = useAuth()
+  const { success } = useToast()
   const navigate = useNavigate()
   const location = useLocation()
   const returnPath = (location.state as LocationState | null)?.from ?? '/'
@@ -35,6 +37,7 @@ export function AuthPage() {
       } else {
         await signUp(credentials)
       }
+      success(mode === 'login' ? 'Welcome back' : 'Account created', mode === 'login' ? 'Your saved journeys are ready.' : 'You can now save and refine itineraries.')
       navigate(returnPath, { replace: true })
     } catch (requestError) {
       setError(

@@ -6,10 +6,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '../auth/AuthProvider'
 import { savedTripFixture, userFixture } from '../test/fixtures'
 import { SavedTripDetailPage } from './SavedTripDetailPage'
+import { ToastProvider } from '../components/ToastProvider'
 
 function renderSavedTrip() {
   return render(
-    <AuthProvider>
+    <AuthProvider><ToastProvider>
       <MemoryRouter initialEntries={['/my-trips/10']}>
         <Routes>
           <Route path="/my-trips/:tripId" element={<SavedTripDetailPage />} />
@@ -17,7 +18,7 @@ function renderSavedTrip() {
           <Route path="/auth" element={<p>Authentication page</p>} />
         </Routes>
       </MemoryRouter>
-    </AuthProvider>,
+    </ToastProvider></AuthProvider>,
   )
 }
 
@@ -54,6 +55,7 @@ describe('SavedTripDetailPage', () => {
         body: JSON.stringify({ title: 'Tokyo after dark', is_public: true }),
       }),
     )
+    expect(await screen.findByRole('status')).toHaveTextContent('Changes saved')
   })
 
   it('sends only the refinement instruction to the AI refinement endpoint', async () => {
@@ -75,6 +77,7 @@ describe('SavedTripDetailPage', () => {
         body: JSON.stringify({ instruction: 'Add a calmer evening on day one.' }),
       }),
     )
+    expect(await screen.findByRole('status')).toHaveTextContent('Itinerary refined')
   })
 
   it('deletes only after confirmation and returns to the trip library', async () => {
@@ -94,5 +97,6 @@ describe('SavedTripDetailPage', () => {
       expect.objectContaining({ method: 'DELETE' }),
     )
     expect(await screen.findByText('My trips page')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Trip deleted')
   })
 })

@@ -5,6 +5,8 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 
 import { useAuth } from '../auth/auth-context'
 import { TripPlanDisplay } from '../components/TripPlanDisplay'
+import { TripProcessingScreen } from '../components/TripProcessingScreen'
+import { useToast } from '../components/toast-context'
 import { ApiError, deleteTrip, getTrip, refineTrip, updateTrip } from '../lib/api'
 import { formatDateRange } from '../lib/formatting'
 import type { TripDetail } from '../types/api'
@@ -13,6 +15,7 @@ export function SavedTripDetailPage() {
   const { tripId } = useParams()
   const parsedTripId = Number(tripId)
   const { accessToken, isLoading, user } = useAuth()
+  const { success } = useToast()
   const navigate = useNavigate()
   const [trip, setTrip] = useState<TripDetail | null>(null)
   const [title, setTitle] = useState('')
@@ -63,6 +66,7 @@ export function SavedTripDetailPage() {
       setTrip(updatedTrip)
       setTitle(updatedTrip.title)
       setIsPublic(updatedTrip.is_public)
+      success('Changes saved', updatedTrip.is_public ? 'This itinerary is now visible in the public feed.' : 'This itinerary remains private to your account.')
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not update this trip. Please try again.')
     } finally {
@@ -77,8 +81,10 @@ export function SavedTripDetailPage() {
     setError(null)
     setIsRefining(true)
     try {
-      setTrip(await refineTrip(trip.id, { instruction: instruction.trim() }, token))
+      const refinedTrip = await refineTrip(trip.id, { instruction: instruction.trim() }, token)
+      setTrip(refinedTrip)
       setInstruction('')
+      success('Itinerary refined', 'Your revised plan is ready to explore.')
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not refine this trip. Please try again.')
     } finally {
@@ -93,6 +99,7 @@ export function SavedTripDetailPage() {
     setIsDeleting(true)
     try {
       await deleteTrip(trip.id, token)
+      success('Trip deleted', 'It has been removed from your library and the feed.')
       navigate('/my-trips', { replace: true })
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : 'We could not delete this trip. Please try again.')
@@ -102,6 +109,7 @@ export function SavedTripDetailPage() {
 
   if (isFetching) return <section className="status-page"><Sparkles size={22} /><p>Loading your itinerary…</p></section>
   if (!trip) return <section className="dashboard-message card" role="alert"><h1>Trip unavailable</h1><p>{error ?? 'This trip may no longer exist.'}</p><Link className="button button--secondary" to="/my-trips">Back to my trips</Link></section>
+  if (isRefining) return <TripProcessingScreen mode="refinement" />
 
   const managementPanel = <>
     <form className="trip-management card" onSubmit={handleSettingsSave}>

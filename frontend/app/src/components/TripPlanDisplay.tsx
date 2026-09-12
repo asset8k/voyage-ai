@@ -11,6 +11,7 @@ import type { ReactNode } from 'react'
 import { formatDate, formatMoney } from '../lib/formatting'
 import type { Activity, BudgetBreakdown, DayPlan, TripPlan } from '../types/api'
 import { InteractiveMap } from './InteractiveMap'
+import { getUniqueMapStops } from './map-stops'
 
 function BudgetSummary({ budget, currency }: { budget: BudgetBreakdown; currency: string }) {
   const items = [
@@ -72,19 +73,17 @@ function ActivityCard({ activity, index, currency }: { activity: Activity; index
 }
 
 function PlacesPanel({ day }: { day: DayPlan }) {
-  const places = day.activities.flatMap((activity) => (
-    activity.resolved_places.map((place) => ({ place, activity }))
-  ))
+  const places = getUniqueMapStops(day)
 
   return (
     <aside className="places-panel">
       <div className="places-panel__map"><InteractiveMap day={day} /></div>
       <div className="places-panel__list">
         <p className="eyebrow">Map-ready places</p>
-        {places.length === 0 ? <p className="muted-copy">This day has no specific map markers yet.</p> : places.map(({ place, activity }) => (
-          <div className="place-row" key={`${activity.name}-${place.place_id}`}>
+        {places.length === 0 ? <p className="muted-copy">This day has no specific map markers yet.</p> : places.map(({ place, activityName, startTime }) => (
+          <div className="place-row" key={place.place_id}>
             <MapPin size={16} />
-            <div><strong>{place.name}</strong><span>{activity.start_time} · {place.formatted_address ?? activity.location}</span></div>
+            <div><strong>{place.name}</strong><span>{startTime} · {place.formatted_address ?? activityName}</span></div>
           </div>
         ))}
       </div>
@@ -127,7 +126,7 @@ export function TripPlanDisplay({ tripPlan, beforeSchedule, sideContent }: TripP
         </section>
         <BudgetSummary budget={tripPlan.budget} currency={tripPlan.currency} />
         {(tripPlan.warnings.length > 0 || tripPlan.assumptions.length > 0) && (
-          <section className="card advisory-card"><TriangleAlert size={20} /><div><h2>Good to know</h2>{[...tripPlan.warnings, ...tripPlan.assumptions].map((item) => <p key={item}>{item}</p>)}</div></section>
+          <section className="card advisory-card"><TriangleAlert size={20} /><div><h2>Good to know</h2><ul>{[...tripPlan.warnings, ...tripPlan.assumptions].map((item) => <li key={item}>{item}</li>)}</ul></div></section>
         )}
         {tripPlan.packing_tips.length > 0 && (
           <section className="card tips-card"><Lightbulb size={20} /><div><h2>Packing tips</h2><ul>{tripPlan.packing_tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></div></section>
