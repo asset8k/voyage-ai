@@ -17,11 +17,12 @@ describe('PlanTripPage', () => {
     expect(travellers).toHaveValue(2)
   })
 
-  it('offers common currencies while allowing another three-letter code', () => {
+  it('offers styled popular currencies while allowing another three-letter code', () => {
     render(<ToastProvider><MemoryRouter><PlanTripPage /></MemoryRouter></ToastProvider>)
 
     const currency = screen.getByRole('combobox', { name: 'Currency' })
-    expect(document.querySelector('datalist option[value="JPY"]')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Show currency options' }))
+    expect(screen.getByRole('option', { name: /jpy japanese yen/i })).toBeInTheDocument()
     fireEvent.change(currency, { target: { value: 'brl' } })
     expect(currency).toHaveValue('BRL')
   })

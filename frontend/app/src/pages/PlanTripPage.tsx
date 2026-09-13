@@ -14,6 +14,7 @@ import { ApiError, generateTrip } from '../lib/api'
 import { saveGeneratedTrip } from '../lib/generation-store'
 import type { TravelPace, TripGenerationRequest } from '../types/api'
 import { DatePicker } from '../components/DatePicker'
+import { CurrencyPicker } from '../components/CurrencyPicker'
 import { TripProcessingScreen } from '../components/TripProcessingScreen'
 import { useToast } from '../components/toast-context'
 
@@ -129,9 +130,9 @@ export function PlanTripPage() {
 
         <div className="form-grid form-grid--four">
           <label className="field"><span>Total budget</span><div className="field__control"><span className="field__prefix">{form.currency}</span><input required min="1" type="number" value={form.budget} onChange={(event) => updateField('budget', Number(event.target.value))} /></div></label>
-          <label className="field"><span>Currency</span><div className="field__control"><input required minLength={3} maxLength={3} className="currency-input" value={form.currency} placeholder="USD" onChange={(event) => updateField('currency', event.target.value.toUpperCase())} list="popular-currencies" /><ChevronDown size={17} /></div><datalist id="popular-currencies"><option value="USD" /><option value="EUR" /><option value="GBP" /><option value="JPY" /><option value="CAD" /><option value="AUD" /><option value="CNY" /><option value="KRW" /><option value="TRY" /><option value="KZT" /><option value="AED" /><option value="THB" /><option value="SGD" /></datalist></label>
+          <label className="field"><span>Currency</span><CurrencyPicker value={form.currency} onChange={(value) => updateField('currency', value)} /></label>
           <label className="field"><span>Travellers</span><div className="field__control"><Users size={18} /><input required min="1" type="number" value={travellersInput} onChange={(event) => updateTravellers(event.target.value)} onBlur={() => { if (travellersInput === '') { setTravellersInput('1'); updateField('travellers', 1) } }} /></div></label>
-          <label className="field"><span>Travel pace</span><div className="field__control field__control--select"><select value={form.travel_pace} onChange={(event) => updateField('travel_pace', event.target.value as TravelPace)}><option value="relaxed">Relaxed</option><option value="balanced">Balanced</option><option value="fast">Fast</option></select><ChevronDown size={17} /></div></label>
+          <label className="field"><span>Travel pace</span><div className="field__control field__control--select"><select value={form.travel_pace} onChange={(event) => updateField('travel_pace', event.target.value as TravelPace)}><option value="relaxed">Relaxed</option><option value="balanced">Balanced</option><option value="fast">Fast</option></select><span className="field__select-chevron"><ChevronDown size={17} /></span></div></label>
         </div>
 
         <label className="field"><span>What would make this trip great?</span><textarea required maxLength={1024} rows={5} placeholder="Tell us what you enjoy, the rhythm you want, food you are curious about, places you have saved, or anything else that matters." value={form.preferences} onChange={(event) => updateField('preferences', event.target.value)} /><small>{form.preferences.length}/1024</small></label>
