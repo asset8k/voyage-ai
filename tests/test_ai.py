@@ -136,15 +136,17 @@ def test_build_generation_input_encodes_images_and_pdfs() -> None:
     assert image_part == {
         "type": "input_image",
         "image_url": (
-            "data:image/jpeg;base64,"
-            f"{base64.b64encode(image_content).decode('ascii')}"
+            f"data:image/jpeg;base64,{base64.b64encode(image_content).decode('ascii')}"
         ),
         "detail": "auto",
     }
     assert pdf_part == {
         "type": "input_file",
         "filename": "booking.pdf",
-        "file_data": base64.b64encode(pdf_content).decode("ascii"),
+        "file_data": (
+            "data:application/pdf;base64,"
+            f"{base64.b64encode(pdf_content).decode('ascii')}"
+        ),
     }
 
 

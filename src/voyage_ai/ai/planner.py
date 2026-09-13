@@ -97,7 +97,7 @@ def build_generation_input(
                 {
                     "type": "input_file",
                     "filename": attachment.filename,
-                    "file_data": encoded_content,
+                    "file_data": (f"data:application/pdf;base64,{encoded_content}"),
                 }
             )
 
