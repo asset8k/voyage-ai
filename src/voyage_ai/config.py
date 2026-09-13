@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 60
     openai_api_key: SecretStr
     google_places_api_key: SecretStr
+    cors_origins: str = "http://localhost:5173"
 
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file
