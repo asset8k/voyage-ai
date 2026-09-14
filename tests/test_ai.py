@@ -15,12 +15,17 @@ from openai.types.responses import (
     ResponseInputItemParam,
     ResponseInputTextParam,
 )
+from pydantic import ValidationError
 
 from voyage_ai.ai import planner
-from voyage_ai.ai.planner import build_generation_input, generate_trip_plan
+from voyage_ai.ai.planner import (
+    build_generation_input,
+    generate_trip_plan,
+    refine_trip_plan,
+)
 from voyage_ai.ai.schemas import Activity, BudgetBreakdown, DayPlan, TripPlan
 from voyage_ai.ai.uploads import UploadedAttachment
-from voyage_ai.trips.schemas import TripGenerationRequest
+from voyage_ai.trips.schemas import TripGenerationRequest, TripRefinementRequest
 
 
 def make_trip_request() -> TripGenerationRequest:
@@ -72,6 +77,17 @@ def make_trip_plan(*, summary: str = "A short Tokyo trip.") -> TripPlan:
         assumptions=[],
         currency="USD",
     )
+
+
+def make_budget_validation_error() -> ValidationError:
+    invalid_plan = make_trip_plan().model_dump(mode="json")
+    invalid_plan["budget"]["food"] = 11
+    invalid_plan["budget"]["total"] = 11
+
+    with pytest.raises(ValidationError) as error:
+        TripPlan.model_validate(invalid_plan)
+
+    return error.value
 
 
 def get_message_content(
@@ -238,3 +254,71 @@ async def test_generate_trip_plan_raises_when_no_structured_plan_is_returned(
 
     with pytest.raises(RuntimeError, match="no structured trip plan"):
         await generate_trip_plan(make_trip_request(), [])
+
+
+@pytest.mark.asyncio
+async def test_generate_trip_plan_repairs_budget_validation_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repaired_plan = make_trip_plan(summary="A repaired Tokyo trip.")
+    parse = AsyncMock(
+        side_effect=[
+            make_budget_validation_error(),
+            make_response(output=[], output_parsed=repaired_plan),
+        ],
+    )
+    monkeypatch.setattr(planner.client.responses, "parse", parse)
+
+    result = await generate_trip_plan(make_trip_request(), [])
+
+    assert result is repaired_plan
+    assert parse.await_count == 2
+
+    repair_call = parse.await_args_list[1]
+    repair_payload = json.loads(repair_call.kwargs["input"])
+    assert repair_payload["source_context"]["trip_generation_request"]["destination"] == "Tokyo"
+    assert repair_payload["invalid_trip_plan"]["budget"]["total"] == 11
+    assert "Correction task:" in repair_call.kwargs["instructions"]
+
+
+@pytest.mark.asyncio
+async def test_refine_trip_plan_repairs_budget_validation_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repaired_plan = make_trip_plan(summary="A refined Tokyo trip.")
+    parse = AsyncMock(
+        side_effect=[
+            make_budget_validation_error(),
+            make_response(output=[], output_parsed=repaired_plan),
+        ],
+    )
+    monkeypatch.setattr(planner.client.responses, "parse", parse)
+
+    result = await refine_trip_plan(
+        TripRefinementRequest(instruction="Add a quieter museum afternoon."),
+        make_trip_plan(),
+        make_trip_request(),
+    )
+
+    assert result is repaired_plan
+    assert parse.await_count == 2
+
+    repair_payload = json.loads(parse.await_args_list[1].kwargs["input"])
+    assert repair_payload["source_context"]["refinement_instruction"] == (
+        "Add a quieter museum afternoon."
+    )
+
+
+@pytest.mark.asyncio
+async def test_generate_trip_plan_raises_when_repair_is_still_invalid(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    parse = AsyncMock(
+        side_effect=[make_budget_validation_error(), make_budget_validation_error()],
+    )
+    monkeypatch.setattr(planner.client.responses, "parse", parse)
+
+    with pytest.raises(RuntimeError, match="invalid trip plan"):
+        await generate_trip_plan(make_trip_request(), [])
+
+    assert parse.await_count == 2

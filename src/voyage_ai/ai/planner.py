@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import time
+from typing import Any
 
 from openai import AsyncOpenAI
 from openai.types.responses import (
@@ -11,7 +12,11 @@ from openai.types.responses import (
 )
 from pydantic import ValidationError
 
-from voyage_ai.ai.prompts import TRIP_PLANNER_INSTRUCTIONS, TRIP_REFINER_INSTRUCTIONS
+from voyage_ai.ai.prompts import (
+    TRIP_PLAN_REPAIR_INSTRUCTIONS,
+    TRIP_PLANNER_INSTRUCTIONS,
+    TRIP_REFINER_INSTRUCTIONS,
+)
 from voyage_ai.ai.schemas import TripPlan
 from voyage_ai.ai.tools import (
     EXCHANGE_RATE_TOOL,
@@ -35,6 +40,7 @@ def log_ai_metrics(
     started_at: float,
     responses: list[ParsedResponse[TripPlan]],
     tool_call_count: int = 0,
+    api_call_count: int | None = None,
 ) -> None:
     latency_ms = (time.perf_counter() - started_at) * 1000
 
@@ -60,7 +66,7 @@ def log_ai_metrics(
         operation,
         responses[-1].model,
         latency_ms,
-        len(responses),
+        api_call_count if api_call_count is not None else len(responses),
         tool_call_count,
         input_tokens,
         output_tokens,
@@ -109,19 +115,85 @@ def build_generation_input(
     ]
 
 
+def get_invalid_trip_plan(validation_error: ValidationError) -> dict[str, Any] | None:
+    """Extract the full draft from a cross-field TripPlan validation error."""
+    required_keys = {"destination", "days", "budget", "currency"}
+
+    for error in validation_error.errors():
+        invalid_data = error.get("input")
+        if isinstance(invalid_data, dict) and required_keys.issubset(invalid_data):
+            return invalid_data
+
+    return None
+
+
+async def repair_invalid_trip_plan(
+    *,
+    operation: str,
+    validation_error: ValidationError,
+    instructions: str,
+    source_context: dict[str, Any],
+) -> ParsedResponse[TripPlan]:
+    """Make one correction attempt when the model's arithmetic is inconsistent."""
+    invalid_trip_plan = get_invalid_trip_plan(validation_error)
+    if invalid_trip_plan is None:
+        raise validation_error
+
+    logger.warning(
+        "%s returned an invalid trip plan; attempting one repair",
+        operation,
+    )
+
+    return await client.responses.parse(
+        model="gpt-5.6-luna",
+        instructions=f"{instructions}\n\n{TRIP_PLAN_REPAIR_INSTRUCTIONS}",
+        input=json.dumps(
+            {
+                "source_context": source_context,
+                "invalid_trip_plan": invalid_trip_plan,
+            },
+        ),
+        text_format=TripPlan,
+    )
+
+
 async def generate_trip_plan(
     request: TripGenerationRequest, attachments: list[UploadedAttachment]
 ) -> TripPlan:
     started_at = time.perf_counter()
+    source_context = {
+        "trip_generation_request": request.model_dump(mode="json"),
+    }
 
     try:
-        first_response = await client.responses.parse(
-            model="gpt-5.6-luna",
-            instructions=TRIP_PLANNER_INSTRUCTIONS,
-            input=build_generation_input(request, attachments),
-            text_format=TripPlan,
-            tools=[WEATHER_TOOL, EXCHANGE_RATE_TOOL],
-        )
+        try:
+            first_response = await client.responses.parse(
+                model="gpt-5.6-luna",
+                instructions=TRIP_PLANNER_INSTRUCTIONS,
+                input=build_generation_input(request, attachments),
+                text_format=TripPlan,
+                tools=[WEATHER_TOOL, EXCHANGE_RATE_TOOL],
+            )
+        except ValidationError as exc:
+            repaired_response = await repair_invalid_trip_plan(
+                operation="Trip generation",
+                validation_error=exc,
+                instructions=TRIP_PLANNER_INSTRUCTIONS,
+                source_context=source_context,
+            )
+            trip_plan = repaired_response.output_parsed
+
+            if trip_plan is None:
+                raise RuntimeError("OpenAI returned no structured repaired trip plan")
+
+            log_ai_metrics(
+                operation="Trip generation",
+                started_at=started_at,
+                responses=[repaired_response],
+                api_call_count=2,
+            )
+
+            return trip_plan
 
         responses = [first_response]
 
@@ -171,13 +243,23 @@ async def generate_trip_plan(
 
             return trip_plan
 
-        final_response = await client.responses.parse(
-            model="gpt-5.6-luna",
-            instructions=TRIP_PLANNER_INSTRUCTIONS,
-            previous_response_id=first_response.id,
-            input=tool_outputs,
-            text_format=TripPlan,
-        )
+        repaired_after_tools = False
+        try:
+            final_response = await client.responses.parse(
+                model="gpt-5.6-luna",
+                instructions=TRIP_PLANNER_INSTRUCTIONS,
+                previous_response_id=first_response.id,
+                input=tool_outputs,
+                text_format=TripPlan,
+            )
+        except ValidationError as exc:
+            repaired_after_tools = True
+            final_response = await repair_invalid_trip_plan(
+                operation="Trip generation",
+                validation_error=exc,
+                instructions=TRIP_PLANNER_INSTRUCTIONS,
+                source_context=source_context,
+            )
 
         responses.append(final_response)
 
@@ -191,6 +273,7 @@ async def generate_trip_plan(
             started_at=started_at,
             responses=responses,
             tool_call_count=len(tool_outputs),
+            api_call_count=3 if repaired_after_tools else None,
         )
 
         return trip_plan
@@ -216,12 +299,22 @@ async def refine_trip_plan(
             "refinement_instruction": refinement.instruction,
         }
 
-        response = await client.responses.parse(
-            model="gpt-5.6-luna",
-            instructions=TRIP_REFINER_INSTRUCTIONS,
-            input=json.dumps(input_payload),
-            text_format=TripPlan,
-        )
+        repaired = False
+        try:
+            response = await client.responses.parse(
+                model="gpt-5.6-luna",
+                instructions=TRIP_REFINER_INSTRUCTIONS,
+                input=json.dumps(input_payload),
+                text_format=TripPlan,
+            )
+        except ValidationError as exc:
+            repaired = True
+            response = await repair_invalid_trip_plan(
+                operation="Trip refinement",
+                validation_error=exc,
+                instructions=TRIP_REFINER_INSTRUCTIONS,
+                source_context=input_payload,
+            )
 
         responses = [response]
 
@@ -234,6 +327,7 @@ async def refine_trip_plan(
             operation="Trip refinement",
             started_at=started_at,
             responses=responses,
+            api_call_count=2 if repaired else None,
         )
 
         return new_trip_plan
