@@ -6,8 +6,6 @@
 
 Voyage AI is an end-to-end applied AI project built around a simple product question: how do you make an LLM itinerary useful enough to save and follow? The answer is not just a prompt. The application combines structured generation, deterministic validation, live tool data, place resolution, authentication, persistence, and a React interface for exploring or managing trips.
 
-![The structured Voyage AI trip-planning form](docs/screenshots/plan-trip-form.png)
-
 **Python 3.12 · FastAPI · Pydantic v2 · OpenAI Responses API · PostgreSQL · async SQLAlchemy · Alembic · React 19 · TypeScript · Google Maps & Places**
 
 ## Contents
