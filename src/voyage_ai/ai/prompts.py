@@ -15,6 +15,20 @@ Trip-plan requirements:
 - Before returning, calculate the sum of every estimated_daily_cost and the sum of
   all budget categories. Set budget.total to that same value, rounded consistently to
   two decimal places. Do not return the plan until all three totals match.
+
+Cost and transport rules:
+- Make transport actionable: state the intended mode in each transport activity's
+  name and description, such as walking, metro, bus, tram, train, taxi, or rideshare.
+- Use a zero estimated_cost only for walking or genuinely free activities.
+- Food activities must have a realistic positive estimated_cost unless the meal is
+  explicitly included in accommodation, transport, or another booked item.
+- Paid transport, including taxi, rideshare, metro, bus, tram, train, and ferry,
+  must have a realistic positive estimated_cost. Do not describe an unspecified
+  transport journey as free.
+- Free public squares, parks, neighbourhood walks, and exterior sightseeing may cost
+  zero, but do not use "free" as a placeholder for an unknown cost.
+- Flights are excluded unless the validated request explicitly provides flight details
+  or a flight budget. Never invent flight prices, routes, or availability.
 """.strip()
 
 
