@@ -145,7 +145,7 @@ async def repair_invalid_trip_plan(
     )
 
     return await client.responses.parse(
-        model="gpt-5.6-luna",
+        model="gpt-6-luna",
         instructions=f"{instructions}\n\n{TRIP_PLAN_REPAIR_INSTRUCTIONS}",
         input=json.dumps(
             {
@@ -168,7 +168,7 @@ async def generate_trip_plan(
     try:
         try:
             first_response = await client.responses.parse(
-                model="gpt-5.6-luna",
+                model="gpt-6-luna",
                 instructions=TRIP_PLANNER_INSTRUCTIONS,
                 input=build_generation_input(request, attachments),
                 text_format=TripPlan,
@@ -246,7 +246,7 @@ async def generate_trip_plan(
         repaired_after_tools = False
         try:
             final_response = await client.responses.parse(
-                model="gpt-5.6-luna",
+                model="gpt-6-luna",
                 instructions=TRIP_PLANNER_INSTRUCTIONS,
                 previous_response_id=first_response.id,
                 input=tool_outputs,
@@ -302,7 +302,7 @@ async def refine_trip_plan(
         repaired = False
         try:
             response = await client.responses.parse(
-                model="gpt-5.6-luna",
+                model="gpt-6-luna",
                 instructions=TRIP_REFINER_INSTRUCTIONS,
                 input=json.dumps(input_payload),
                 text_format=TripPlan,
