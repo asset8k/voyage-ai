@@ -24,20 +24,63 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, init)
-  const payload: unknown = await response.json().catch(() => null)
+const READ_TIMEOUT_MS = 20_000
+const WRITE_TIMEOUT_MS = 60_000
+const AI_TIMEOUT_MS = 180_000
+const TRANSIENT_STATUSES = new Set([502, 503, 504])
 
-  if (!response.ok) {
-    const detail =
-      typeof payload === 'object' && payload !== null && 'detail' in payload
-        ? String(payload.detail)
-        : 'Something went wrong. Please try again.'
+async function request<T>(
+  path: string,
+  init: RequestInit,
+  timeoutMs = init.method === 'GET' ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS,
+): Promise<T> {
+  // Only reads are retried. Replaying a write could create duplicate trips or AI charges.
+  const maxAttempts = init.method === 'GET' ? 3 : 1
 
-    throw new ApiError(detail, response.status)
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** (attempt - 1)))
+    }
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...init,
+        signal: controller.signal,
+      })
+      const payload: unknown = await response.json().catch((error: unknown) => {
+        if (controller.signal.aborted) throw error
+        return null
+      })
+
+      if (!response.ok) {
+        const detail =
+          typeof payload === 'object' && payload !== null && 'detail' in payload
+            ? String(payload.detail)
+            : 'The service is temporarily unavailable. Please try again shortly.'
+
+        throw new ApiError(detail, response.status)
+      }
+
+      return payload as T
+    } catch (error) {
+      const retryable = !(error instanceof ApiError) || TRANSIENT_STATUSES.has(error.status)
+      if (!retryable || attempt === maxAttempts - 1) {
+        if (error instanceof ApiError) throw error
+        const message = controller.signal.aborted
+          ? init.method === 'GET'
+            ? 'The server is taking longer than expected. Please try again shortly.'
+            : 'The request took too long. Check your trips before trying again; it may still finish.'
+          : 'We could not reach the server. Check your connection and try again shortly.'
+        throw new ApiError(message, 0)
+      }
+    } finally {
+      clearTimeout(timeoutId)
+    }
   }
 
-  return payload as T
+  throw new ApiError('The service is temporarily unavailable.', 0)
 }
 
 function jsonRequest<T>(
@@ -45,6 +88,7 @@ function jsonRequest<T>(
   method: 'DELETE' | 'GET' | 'PATCH' | 'POST',
   body?: object,
   accessToken?: string,
+  timeoutMs?: number,
 ): Promise<T> {
   return request<T>(path, {
     method,
@@ -53,7 +97,7 @@ function jsonRequest<T>(
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
-  })
+  }, timeoutMs)
 }
 
 export async function generateTrip(
@@ -70,7 +114,7 @@ export async function generateTrip(
   return request<TripPlan>('/api/trips/generate', {
     method: 'POST',
     body: formData,
-  })
+  }, AI_TIMEOUT_MS)
 }
 
 export function register(credentials: Credentials): Promise<User> {
@@ -118,5 +162,5 @@ export function refineTrip(
   data: TripRefinementRequest,
   accessToken: string,
 ): Promise<TripDetail> {
-  return jsonRequest<TripDetail>(`/api/trips/${tripId}/refine`, 'POST', data, accessToken)
+  return jsonRequest<TripDetail>(`/api/trips/${tripId}/refine`, 'POST', data, accessToken, AI_TIMEOUT_MS)
 }

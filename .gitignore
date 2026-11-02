@@ -8,9 +8,34 @@ wheels/
 
 # Dotenv
 .env
+.env.*
+!.env.example
+!.env.*.example
 
 # Virtual environments
 .venv
 
-# md file for LLM
+# Python test, lint, and coverage artifacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Frontend dependencies, test reports, and local deployment metadata
+node_modules/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.vercel/
+
+# Local logs and macOS metadata
+*.log
+.DS_Store
+._*
+
+# Personal project instructions
 project_guide.md

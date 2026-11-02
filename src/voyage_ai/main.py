@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from voyage_ai.auth.router import router as auth_router
 from voyage_ai.config import settings
 from voyage_ai.database import engine
+from voyage_ai.internal import router as internal_router
 from voyage_ai.trips.router import router as trips_router
 
 logging.basicConfig(
@@ -34,6 +35,7 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(trips_router, prefix="/api")
+app.include_router(internal_router)
 
 
 @app.get("/api/health")

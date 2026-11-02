@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -7,7 +7,29 @@ import { ExplorePage } from './ExplorePage'
 import { PublicTripPage } from './PublicTripPage'
 
 describe('public exploration', () => {
-  afterEach(() => vi.unstubAllGlobals())
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('shows a recoverable error after bounded startup retries and supports retrying manually', async () => {
+    vi.useFakeTimers()
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'))
+    vi.stubGlobal('fetch', fetchMock)
+    render(<MemoryRouter><ExplorePage /></MemoryRouter>)
+    expect(screen.getByText('Finding shared journeys…')).toBeInTheDocument()
+
+    await act(async () => { await vi.runAllTimersAsync() })
+    expect(screen.getByRole('alert')).toHaveTextContent('We could not reach the server')
+    expect(screen.queryByText('Finding shared journeys…')).not.toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledTimes(3)
+
+    vi.useRealTimers()
+    fetchMock.mockResolvedValueOnce(new Response('[]'))
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(await screen.findByText('The feed is quiet for now.')).toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledTimes(4)
+  })
 
   it('loads public trips without requiring a bearer token', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([{

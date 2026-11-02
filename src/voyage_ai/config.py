@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     openai_api_key: SecretStr
     google_places_api_key: SecretStr
     cors_origins: str = "http://localhost:5173"
+    keepalive_token: SecretStr = SecretStr("")
 
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file

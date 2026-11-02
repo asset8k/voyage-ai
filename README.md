@@ -4,6 +4,9 @@
 
 **Live application:** [voyage-ai-kz.vercel.app](https://voyage-ai-kz.vercel.app/)
 
+For free-tier readiness monitoring and startup recovery, see the
+[keep-alive setup guide](docs/KEEPALIVE_SETUP.md).
+
 Voyage AI is an end-to-end applied AI project built around a simple product question: how do you make an LLM itinerary useful enough to save and follow? The answer is not just a prompt. The application combines structured generation, deterministic validation, live tool data, place resolution, authentication, persistence, and a React interface for exploring or managing trips.
 
 **Python 3.12 · FastAPI · Pydantic v2 · OpenAI Responses API · PostgreSQL · async SQLAlchemy · Alembic · React 19 · TypeScript · Google Maps & Places**
